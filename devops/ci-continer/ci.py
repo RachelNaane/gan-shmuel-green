@@ -10,6 +10,11 @@ def staff_are_pushed():
     return "running script to pull the data... test will be sent by mail"
 
 # Render index.html
+@app.get("/")
+def render_index():
+    return render_template("index.html")
+
+# Render index.html
 @app.get("/health")
 def render_index():
     return render_template("index.html")
