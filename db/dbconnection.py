@@ -17,15 +17,15 @@ def DB_INITIALIZATION():
     db_connect()
     with open('weightdb.sql','r') as f:
         sql_command = f.read()
-    print(sql_command)
      
     cursor.execute(sql_command,multi=True)
+    print(" If this is the only message you see while running this file: Data Base is connected and runing")
     cnx.commit()
     cnx.close()
     
 
 def check_table_existence(table_name):
-    cursor.execute("USE weight;")
+    
     cursor.execute(f"SHOW TABLES LIKE '{table_name}'")
     if cursor.fetchone():
         return True
@@ -71,15 +71,34 @@ def post_message(room_name,message):
     cnx.commit()
     cnx.close()
 
-# if __name__ == "__main__":
-#     DB_INITIALIZATION()
+#Run query on the DB
+def run_sql_command(command):
+    db_connect()
+    cursor.execute("USE weight;")
+    cursor.execute(command)
 
-    
+    results = cursor.fetchall()
 
-#Testin the Code:
-# db_connect()  
-def test():
+    result_str = ""
+    for row in results:
+        result_str += str(row) + '\n'
+    return result_str
+    cnx.commit()
+    cnx.close()
+
+#TO INSERT DATA to the DB
+def run_inset_query(command):
+    db_connect()
+    cursor.execute("USE weight;")
+    cursor.execute(command)
+    cnx.commit()
+    cnx.close()
+
+
+
+
+
+#Initialized the data base creates the basic tables
+if __name__ == "__main__":
     DB_INITIALIZATION()
-
-test()
 
