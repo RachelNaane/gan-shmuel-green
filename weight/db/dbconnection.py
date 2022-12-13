@@ -78,12 +78,6 @@ def run_sql_command(command):
     cursor.execute(command)
 
     results = cursor.fetchall()
-    
-    result_str = ""
-
-    for row in results:
-        result_str += str(row)
-    
     cnx.commit()
     cnx.close()
     return results
