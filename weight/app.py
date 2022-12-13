@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
+from datetime import datetime
 from db import dbconnection
-import json
+import json, re
 
 
 
@@ -10,9 +11,53 @@ app = Flask(__name__)
 #This is the Post Mehthod Implemented by yossi
 @app.route("/weight", methods=["POST"])
 def weightpost():
-        return data
+    if request.method == "POST":
+        direction = request.form.get("direction")
+        truck = request.form.get("truck")
+        containers = request.form.get("containers")
+        weight = request.form.get("weight")
+        unit = request.form.get("unit")
+        force = request.form.get("force")
+        produce = request.form.get("produce")
+        sid = dbconnection.run_sql_command(f'SELECT COUNT(*) AS row_count FROM transactions;')
+        data = {
+        #more eff
+        'sessionid':int(sid[0][0])+1,
+        'direction': direction.upper() if direction.upper() in ('IN', 'OUT') else 'None', 
+        'truck': truck, 
+        'containers': str(containers), 
+        'weight': int(weight), 
+        'unit': unit if unit in ('kg', 'lbs') else 'None',
+        'force': force.title(), 
+        'produce': produce if produce else "na",
+        'time':int(datetime.now().strftime('%Y%m%d%H%M%S'))}
+        
+        if data["direction"] == "IN":
+            dbconnection.run_inset_query(fr'INSERT INTO transactions (datetime,direction,truck,containers,bruto,produce) VALUES ({data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
+            dbconnection.run_inset_query(fr'INSERT INTO transactions (datetime,direction,truck,containers,bruto,produce) VALUES ({data["time"]},"OUT","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
 
+        allrows = dbconnection.run_sql_command('select * from transactions;')
+        [print(i) for i in allrows]
+        alltid = [i for i in allrows if i[3] == truck]
+        
+        if alltid[-1][2] == data["direction"]:
+            if data["force"] == "False":
+                print(f"Error: {allrows[-1][2]} followed by {data['direction']}")
+            else:
+                dbconnection.run_sql_command(f'UPDATE transactions SET bruto = {data["weight"]} WHERE id = {alltid[-1][0]};')
+                
+        tracktara = 5
+        neto = 5
+        if data["direction"] == "OUT":
+            dbconnection.run_inset_query(fr'INSERT INTO transactions (id,datetime,direction,truck,containers,bruto,truckTara,neto,produce) VALUES ({data["sessionid"]},{data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},{tracktara},{neto},"{data["produce"]}");')
 
+        
+        # if data["direction"] == "OUT" and truckidlist[-1][6] == "None":
+        #     print('out followed by None')
+        # #print(dbconnection.run_sql_command('select * from transactions;'))
+        # print(truckidlist[-1])
+        return "allrows"
+        
 #Get Weight return json of the last time according to a time zone
 #need to improve so it works with time
 #need to improve the Filt so it works with all options
