@@ -32,7 +32,7 @@ def staff_are_pushed():
         for line in file:
             message+=f"{line}\n"
     msg.body=message
-    msg.body="success!!!!!!"
+    
     mail.send(msg)
 
     return "running script to pull the data... test will be sent by mail"
