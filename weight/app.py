@@ -136,7 +136,7 @@ def health():
     if res == '1':
         return "OK\n"
     else:
-        return "Not Okay"
+        return '0'
 
 
 

@@ -6,10 +6,10 @@ def db_connect():
     global cursor
     cnx = mysql.connector.connect(
     #mysql container ip 
-    host="localhost",
+    host="weight-app-weaigt-db-1",
     user="root",
     password="password",
-    port = 8082
+    port = 3306
     )   
     cursor = cnx.cursor()
     
