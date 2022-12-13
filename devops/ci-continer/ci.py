@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 
 def finde_mail(dec):
-	lst = str(re.findall('\S+@\S+', dec))  
+	lst = re.findall('\S+@\S+', dec)
 	email_address = re.sub(r'[,,\']', '',lst[-1])
 	return email_address
 
@@ -29,7 +29,7 @@ mail = Mail(app)
 @app.post("/triger")
 def staff_are_pushed():
     #os.system("bash start_testing.sh")
-    content = request.get_json(silent=True)
+    content = str(request.get_json(silent=True))
     email_address = find_mail(content)
     #send mail
     #email_address="ratash3@gmail.com"
