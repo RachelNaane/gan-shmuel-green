@@ -12,7 +12,7 @@ def find_mail(content): # crazy complex function that do some magic on a string
 	return email_address
 
 
-def send_mail(content): # funck that sends mail
+def send_mail(content): # func that sends mail
         # mail conf
         app.config['MAIL_SERVER']='smtp.gmail.com'
         app.config['MAIL_PORT'] = 587
@@ -23,7 +23,7 @@ def send_mail(content): # funck that sends mail
         app.config['MAIL_DEFAULT_SENDER']= 'ratash3@gmail.com'
         app.config['MAIL_MAX_EMAILS'] = None
         app.config['MAIL_ASCII_ATTACHMENTS'] = False
-        mail = Mail(app)
+	mail = Mail(app)
         email_address = find_mail(content) # send the content of the jason file to function to finde the pusher email address
         msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com'])
         msg.add_recipient(email_address)
@@ -35,7 +35,7 @@ def send_mail(content): # funck that sends mail
         mail.send(msg) 
 
 
-# post reques
+# post request
 @app.post("/triger")
 def staff_are_pushed():
     content = str(request.get_json(silent=True)) #add the jason content to a string we can run tests on 
@@ -47,7 +47,7 @@ def staff_are_pushed():
     return "push recived ... mails will be sent when merged with main"
     
 
-# home page(not required but nice ti have)
+# home page(not required but nice to have)
 @app.get("/")
 def home_page():
     return render_template("index.html")
