@@ -38,6 +38,7 @@ def insert_message_to_table(table_name,message):
     cursor.execute(f"INSERT INTO {table_name} (message) VALUES ('{message}');")
 
 
+
 #return all the data from the mysql from a specific room
 def get_messages(room_name):
     #check if the room(table) exists: 
@@ -85,7 +86,7 @@ def run_sql_command(command):
     
     cnx.commit()
     cnx.close()
-    return result_str
+    return results
 
 #TO INSERT DATA to the DB
 def run_inset_query(command):

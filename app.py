@@ -45,7 +45,7 @@ def weightget():
         })
         item_list.append(single_item)
     return item_list
-    
+
 
 
 @app.route("/health")
@@ -90,6 +90,11 @@ def get_item(id):
     return f"{id_input}:{from_arg}{to_arg}"
 
     
+@app.route("/test", methods=["GET"])
+def test():
+    allrows = dbconnection.run_sql_command('select * from transactions;')
+    print(allrows)
+    return "test"
 
 
 
