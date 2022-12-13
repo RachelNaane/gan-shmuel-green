@@ -8,6 +8,8 @@ app = Flask(__name__)
 def staff_are_pushed():
     request.data
     os.system("bash start_testing.sh")
+    #os.system("bash check.sh")
+    #os.system("python3 emails.py")
     return "running script to pull the data... test will be sent by mail"
 
 # Render index.html

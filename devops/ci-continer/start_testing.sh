@@ -6,4 +6,7 @@
 mkdir test && cd test
 git clone https://github.com/RachelNaane/gan-shmuel-green.git
 wait
+cd gan-shmuel-green 
+bash weight/init.sh &
+bash billing/init.sh &
 rm -f -r test
