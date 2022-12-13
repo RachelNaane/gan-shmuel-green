@@ -1,6 +1,7 @@
 import mysql.connector
 import dbconnection
 
+#Sample
 dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1825025', '12323', '2022-11-11', 'in', '123', '5423', '432', '542', '433', '431')")
 dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1925025', '12323', '2022-11-11', 'in', '123', '5423', '432', '542', '433', '431')")
 dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1125025', '12323', '2022-11-11', 'in', '123', '5423', '432', '542', '433', '431')")

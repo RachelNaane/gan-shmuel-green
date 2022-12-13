@@ -2,15 +2,22 @@ version: '3.9'
 
 
 services:
+  weight-app:
+    build: .
+    ports:
+      - "8081:5000"
+    depends_on:
+      app-weaigt-db:
+        condition: service_healthy
   app-weaigt-db:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "weight"
     volumes:
-      - ./db/weightdb.sql:/init
+      - ./db/sample_data:/docker-entrypoint-initdb.d
     ports:
-      - 3306:3306
-    # command: [mysql, -u, root, -p, password, -e, "source /init/weightdb.sql","&& bash"]
+      - 8082:3306
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s

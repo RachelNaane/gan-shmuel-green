@@ -132,7 +132,12 @@ def weightget():
 #Possible to add select 1 and by that return ok
 @app.route("/health")
 def health():
-    return "OK\n"
+    res = dbconnection.health()
+    if res == '1':
+        return "OK\n"
+    else:
+        return "Not Okay"
+
 
 
 #starting of implemanation
@@ -190,7 +195,7 @@ def return_unkown_containers():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
 
 
     
