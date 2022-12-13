@@ -153,6 +153,7 @@ def get_item(id):
     return f"{id_input}:{from_arg}{to_arg}"
 
 
+#Return information about a Session Number
 @app.route("/session/<id>", methods=["GET"])
 def get_session(id):
     alldata = dbconnection.run_sql_command(f"select * from transactions where sessionid={id}")

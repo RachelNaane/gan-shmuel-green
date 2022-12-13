@@ -47,10 +47,35 @@ describe containers_registered;
 describe transactions;
 
 
+--DUMPING DATA TO THE DB
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('12323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('12323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('22323', '2022-12-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('32323', '2021-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('32323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('42323', '2018-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('52323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('62323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('62323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('72323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('72323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+--Direction none
+INSERT INTO transactions (sessionid, datetime, containers, bruto, truckTara, neto, produce) VALUES ('82323', '2022-11-11', '5423', '432', '300', '433', '431');
+
 
 --
 -- Dumping data for table `test`
 --
 
 -- INSERT INTO `test` (`id`, `aa`) VALUES
--- (1, 'aaaa'),
+-- (1, 'aaaa')
+
+
+
