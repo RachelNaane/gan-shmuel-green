@@ -28,10 +28,9 @@ app.config['MAIL_ASCII_ATTACHMENTS'] = False
 mail = Mail(app)
 
 # Render index.html
-@app.get("/triger")
+@app.post("/triger")
 def staff_are_pushed():
-    request.data
-    os.system("bash start_testing.sh")
+    #os.system("bash start_testing.sh")
     content = request.get_json(silent=True)
     email_address = find_mail(content)
     #send mail
