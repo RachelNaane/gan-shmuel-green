@@ -17,7 +17,6 @@ def DB_INITIALIZATION():
     db_connect()
     with open('weightdb.sql','r') as f:
         sql_command = f.read()
-     
     cursor.execute(sql_command,multi=True)
     print(" If this is the only message you see while running this file: Data Base is connected and runing")
     cnx.commit()
@@ -78,13 +77,15 @@ def run_sql_command(command):
     cursor.execute(command)
 
     results = cursor.fetchall()
-
+    
     result_str = ""
+
     for row in results:
-        result_str += str(row) + '\n'
-    return result_str
+        result_str += str(row)
+    
     cnx.commit()
     cnx.close()
+    return result_str
 
 #TO INSERT DATA to the DB
 def run_inset_query(command):
