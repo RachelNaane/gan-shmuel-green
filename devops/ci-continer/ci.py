@@ -6,6 +6,7 @@ app = Flask(__name__)
 # Render index.html
 @app.post("/triger")
 def staff_are_pushed():
+    request.data
     os.system("bash start_testing.sh")
     return "running script to pull the data... test will be sent by mail"
 
