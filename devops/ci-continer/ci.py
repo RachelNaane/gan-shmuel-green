@@ -5,6 +5,18 @@ import re
 
 app = Flask(__name__)
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'ratash3@gmail.com'
+app.config['MAIL_PASSWORD'] = 'eksghxoohjkwcqck'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_DEFAULT_SENDER']= 'ratash3@gmail.com'
+app.config['MAIL_MAX_EMAILS'] = None
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
+
+mail = Mail(app)
+
 
 def find_mail(content): # crazy complex function that do some magic on a string 
 	lst = str(re.findall('\S+@\S+', content))  
@@ -23,7 +35,7 @@ def send_mail(content): # func that sends mail
         app.config['MAIL_DEFAULT_SENDER']= 'ratash3@gmail.com'
         app.config['MAIL_MAX_EMAILS'] = None
         app.config['MAIL_ASCII_ATTACHMENTS'] = False
-	mail = Mail(app)
+        mail = Mail(app)
         email_address = find_mail(content) # send the content of the jason file to function to finde the pusher email address
         msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com'])
         msg.add_recipient(email_address)
