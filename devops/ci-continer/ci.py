@@ -1,18 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from flask_mail import Mail, Message
+import re
 
 app = Flask(__name__)
 
 
-def find_mail(content):
-    level3 = str((content["commits"]))
-    level3 = level3.split(",")
-    level3 = level3[10]
-    level3 = level3.replace(" 'email': '", " ")
-    level3 = level3.replace("'", "")
-    email_address= level3.replace(" ", "")
-    return email_address
+def finde_mail(dec):
+	lst = str(re.findall('\S+@\S+', dec))  
+	email_address = re.sub(r'[,,\']', '',lst[-1])
+	return email_address
+
 
 # mail conf
 app.config['MAIL_SERVER']='smtp.gmail.com'
