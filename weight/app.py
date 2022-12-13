@@ -13,7 +13,9 @@ def weightpost():
         return data
 
 
-#Noams
+#Get Weight return json of the last time according to a time zone
+#need to improve so it works with time
+#need to improve the Filt so it works with all options
 @app.route("/weight", methods=["GET"])
 def weightget():
     date = request.args.get("from")
@@ -29,8 +31,7 @@ def weightget():
         query = dbconnection.run_sql_command("select * from transactions where direction = in")
     elif filt == "out":
         query = dbconnection.run_sql_command("select * from transactions where direction = out")
-    
-    # print(query)
+
     item_list = []
     single_item = {}
     for item in query:
@@ -47,31 +48,15 @@ def weightget():
     return item_list
 
 
-
+#Possible to add select 1 and by that return ok
 @app.route("/health")
 def health():
     return "OK\n"
 
 
 
-
-##Day 2 
-
-# ?from=t1&to=t2
-
-
-# GET /item/<id>?from=t1&to=t2
-# - id is for an item (truck or container). 404 will be returned if non-existent
-# - t1,t2 - date-time stamps, formatted as yyyymmddhhmmss. server time is assumed.
-# default t1 is "1st of month at 000000". default t2 is "now".
-# Returns a json:
-# { "id": <str>,
-#   "tara": <int> OR "na", // for a truck this is the "last known tara"
-#   "sessions": [ <id1>,...]
-# }
-
-
 #starting of implemanation
+#Shamir work
 @app.route("/item/<id>", methods=["GET"])
 def get_item(id):
 
@@ -89,12 +74,6 @@ def get_item(id):
 
     return f"{id_input}:{from_arg}{to_arg}"
 
-    
-@app.route("/test", methods=["GET"])
-def test():
-    allrows = dbconnection.run_sql_command('select * from transactions;')
-    print(allrows)
-    return "test"
 
 
 
@@ -110,18 +89,19 @@ def test():
 #    "neto": <int> or "na" // na if some of containers unknown
 #  }
 # GET /session/<id>
+
+#Missons:
+# Return without tuples (only the string in the dictonary )
 @app.route("/session/<id>", methods=["GET"])
 def get_session(id):
 
     return_dict = {}
     #Check for id in the db IF not return 404
-    print('test')
-    dbconnection.run_sql_command(f"select id from transactions where id={id}")
-    # try:
-    #     dbconnection.run_sql_command(f"select id from transactions where id={id}")
-    # except:
-    #     return abort(404)
-    
+    # dbconnection.run_sql_command(f"select id from transactions where id={id}")
+    res = dbconnection.run_sql_command(f"select id from transactions where id={id}")
+    if res == []:
+        return abort(404)
+
 
     ##values for the json
     truck_id = dbconnection.run_sql_command(f"select truck from transactions where id={id}")
@@ -129,7 +109,7 @@ def get_session(id):
 
     #Check for in and out
     state = dbconnection.run_sql_command(f"select direction from transactions where id={id}")
-
+    print(f"{truck_id} {bruto} {state}")
     return_dict.update({
         "id":f"{id}",
         "truck":f"{truck_id}",
@@ -151,6 +131,23 @@ def get_session(id):
 
 
     return json.dumps(return_dict)
+
+# GET /unknown
+# Returns a list of all recorded containers that have unknown weight:
+# ["id1","id2",...]
+@app.route("/unknown")
+def return_unkown_containers():
+    containers = dbconnection.run_sql_command("select * from containers_registered")
+    list_of_unkown = []
+    for item in containers:
+        if item[1] == None:
+            list_of_unkown.append(item[0])
+    print(list_of_unkown)
+
+
+    return list_of_unkown
+
+
 
 
 
