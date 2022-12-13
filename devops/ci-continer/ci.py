@@ -14,7 +14,7 @@ def find_mail(content):
     email_address= level3.replace(" ", "")
     return email_address
 
-
+# mail conf
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'ratash3@gmail.com'
