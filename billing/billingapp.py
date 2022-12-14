@@ -39,7 +39,7 @@ def truck():
     except:
         return make_response("<h1>Failure</h1>",500)
     return make_response("<h1>Registerd</h1>",200)
-    
+
 
 @app.route("/")
 def home():
@@ -57,7 +57,10 @@ def health():
 
 
 @app.route("/rates", methods=["GET"])
-def get_rates():  
+def get_rates():
+    file_to_get = request.json["filename"]  
+    if not os.path.isfile(f"in/{file_to_get}"):
+        return make_response("<h1>Sorry, The File Doesn't Exist</h1>",500)
     uploads = os.path.join(app.root_path,"in")
     respone = make_response(send_from_directory(path="rates.xlsx",directory=uploads))
     respone.status_code = 200
@@ -81,10 +84,10 @@ def update_provider(provider_id):
 def register_provider():
     provider_name= request.json["name"]
     db_connect()
-    cursor.execute("USE billdb;")
-    cursor.execute(f"select * from Provider where name = '{provider_name}';")
-    is_a_known_provider = cursor.fetchone()
-    if is_a_known_provider: 
+    cursor.execute("USE billdb;") 
+    cursor.execute(f"select * from Provider where name = '{provider_name}';") #checks if providers exists
+    is_a_known_provider = cursor.fetchone() #checks if there is any output from the requested query
+    if is_a_known_provider: #checks the variable if it has a context or not (no context - means that provider doesn't exist yet)
         return make_response("<h1>Provider already registered</h1>",500)
     cursor.execute(f"INSERT INTO Provider (name) VALUES ('{provider_name}');")
     cursor.execute(f"select id from Provider where name = '{provider_name}';")

@@ -30,6 +30,6 @@ services:
     
 networks:
   default:
-    name: production-net
+    name: ${NETWORK}
     external: true
 
