@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the base URL of your Flask API
-API_BASE_URL="http://localhost:5000"
+API_BASE_URL="http://localhost:8081"
 
 
 # Declare an empty array to store the responses from the requests
@@ -31,6 +31,7 @@ done
 
 if [[ ${RESPONSES[@]} =~ "200" ]]; then
   # If all the responses are 200, return 0
+  echo "worked!"
   exit 0 
 else
   # Otherwise, return 1
