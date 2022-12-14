@@ -12,7 +12,7 @@ import mysql.connector
 
 #     )   
 
-PROD
+# PROD
 def db_connect():
     global cnx
     global cursor
