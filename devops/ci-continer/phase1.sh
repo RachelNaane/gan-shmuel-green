@@ -13,16 +13,15 @@ wait
 
 #up env-testing
 cd $root_weight
-# export APP_PORT=8086
-# export DB_PORT=8087
+
+echo -e "APP_PORT=8086\nDB_PORT=8087\nVOLUME=weight-test-volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
 wait
 
 
 cd $root_billing
-# export APP_PORT=8088
-# export DB_PORT=8089
 
+echo -e "APP_PORT=8088\nDB_PORT=8089\nVOLUME=billing-test-volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
 wait
 
