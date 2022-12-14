@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory
+from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory, jsonify
 import os.path
 import mysql.connector
 
@@ -21,13 +21,13 @@ def update_provider_id(id):
         return make_response("<h1>Updated</h1>",200)  
     except:
         return make_response("<h1>Failure</h1>",500)
-        
+
+
 
 @app.route("/truck", methods=["POST"])
 def truck():
     provider_id = request.json["provider"]
     truck_id = request.json["id"]
-
     db_connect()
     cursor.execute("USE billdb;")
     cursor.execute(f"SELECT * from Provider where id = {int(provider_id)};")
@@ -39,10 +39,12 @@ def truck():
     except:
         return make_response("<h1>Failure</h1>",500)
     return make_response("<h1>Registerd</h1>",200)
+    
 
 @app.route("/")
 def home():
     return make_response("<h1>HELLO</h1>",200)
+
 
 @app.route("/health")
 def health():
@@ -53,12 +55,14 @@ def health():
         return make_response("<h1>Failure</h1>",500)
     return make_response("<h1>OK</h1>",200)
 
+
 @app.route("/rates", methods=["GET"])
 def get_rates():  
     uploads = os.path.join(app.root_path,"in")
     respone = make_response(send_from_directory(path="rates.xlsx",directory=uploads))
     respone.status_code = 200
     return respone 
+
 
 @app.route("/provider/<provider_id>", methods=["PUT"])
 def update_provider(provider_id):
@@ -71,6 +75,23 @@ def update_provider(provider_id):
         return make_response("<h1>OK</h1>",200)
     except:
         return make_response("<h1>Unable to update</h1>",500)
+
+
+@app.route("/provider", methods=["POST"])  
+def register_provider():
+    provider_name= request.json["name"]
+    db_connect()
+    cursor.execute("USE billdb;")
+    cursor.execute(f"select * from Provider where name = '{provider_name}';")
+    is_a_known_provider = cursor.fetchone()
+    if is_a_known_provider: 
+        return make_response("<h1>Provider already registered</h1>",500)
+    cursor.execute(f"INSERT INTO Provider (name) VALUES ('{provider_name}');")
+    cursor.execute(f"select id from Provider where name = '{provider_name}';")
+    new_id = cursor.fetchone()
+    return jsonify(
+        id=new_id
+    )
 
 
 def db_connect():

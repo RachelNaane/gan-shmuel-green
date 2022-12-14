@@ -24,7 +24,8 @@ services:
     ports:
       - "${DB_PORT}:3306"
     volumes:
-      - .docker/billingdb.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ${BILLING_TEST_VOLUME}:/docker-entrypoint-initdb.d
+      - ${BILLING_PROD_VOLUME}:/var/lib.mysql
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s
