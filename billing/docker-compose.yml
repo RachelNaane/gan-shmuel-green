@@ -11,10 +11,6 @@ services:
       bill-db:
         condition: service_healthy
 
-
-
-
-
   bill-db:
     image: mysql:5.7
     environment:
@@ -31,3 +27,9 @@ services:
       timeout: 20s
       retries: 10
       start_period: 30s
+    
+networks:
+  default:
+    name: production-net
+    external: true
+
