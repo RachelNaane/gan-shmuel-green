@@ -20,6 +20,14 @@ CREATE TABLE IF NOT EXISTS `containers_registered` (
   PRIMARY KEY (`container_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=10001 ;
 
+CREATE TABLE IF NOT EXISTS `trucks_registered` (
+  `truck_id` varchar(15) NOT NULL,
+  `weight` int(12) DEFAULT NULL,
+  `unit` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`truck_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10001 ;
+
+
 -- --------------------------------------------------------
 
 --

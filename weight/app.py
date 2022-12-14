@@ -113,6 +113,8 @@ def weightget():
     single_item = {}
    #PUTTING RESOLT INTO A LIST
     query = [i for i in query]
+    
+
     for item in query:
 
         single_item = {
