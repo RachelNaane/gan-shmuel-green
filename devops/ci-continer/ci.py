@@ -36,17 +36,20 @@ def send_mail(content): # func that sends mail
         app.config['MAIL_MAX_EMAILS'] = None
         app.config['MAIL_ASCII_ATTACHMENTS'] = False
         mail = Mail(app)
-        email_address = find_mail(content) # send the content of the jason file to function to finde the pusher email address
-        msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com'])
-        msg.add_recipient(email_address)
-        message=""
-        with open("score.txt", "a+") as file:
-            for line in file:
-                message+=f"{line}\n"
-        msg.body=message
+        #send
+        email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
+        msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
+        with app.open_resource("../../billing/score.txt") as fp:
+            msg.attach("./../billing/score.txt", "text/plain", fp.read())
+        with app.open_resource("../../weight/score.txt") as fp:
+            msg.attach("../../weight/score.txt", "text/plain", fp.read())
         mail.send(msg) 
-
-
+        
+        # message=""
+        # with open("billing/score.txt", "a+") as file:
+        #     for line in file:
+        #         message+=f"{line}\n"
+        # msg.body=message
 # post request
 @app.post("/triger")
 def staff_are_pushed():
