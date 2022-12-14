@@ -15,7 +15,8 @@ services:
       MYSQL_ROOT_PASSWORD: "password"
       MYSQL_DATABASE: "weight"
     volumes:
-      - ./db/sample_data:/docker-entrypoint-initdb.d
+      - ${WEIGHT_TEST_VOLUME}:/docker-entrypoint-initdb.d
+      - ${WEIGHT_PROD_VOLUME}:/var/lib/mysql
     ports:
       - ${DB_PORT}:3306
     healthcheck:
