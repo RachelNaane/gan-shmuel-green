@@ -1,19 +1,30 @@
 version: '3.9'
 
 services:
-  
+  bill-app:
+    build: .
+    environment:
+      APP_PORT: ${APP_PORT}
+    ports:
+      - "${APP_PORT}:5000"
+    depends_on:
+      bill-db:
+        condition: service_healthy
 
 
 
 
-  db:
+
+  bill-db:
     image: mysql:5.7
     environment:
+      DB_PORT: ${DB_PORT}
       MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "billdb"
     ports:
-      - 3306:3306
+      - "${DB_PORT}:3306"
     volumes:
-      - ./db/billingdb.sql:/init
+      - .docker/billingdb.sql:/docker-entrypoint-initdb.d/setup.sql
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s

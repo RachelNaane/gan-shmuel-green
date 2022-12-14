@@ -26,7 +26,7 @@ def update_provider_id(id):
 @app.route("/truck", methods=["POST"])
 def truck():
     provider_id = request.json["provider"]
-    truck_id = request.json["id"] # NEED TO ADD CHECK IF THE PROVIDER EXISTS IN THE DB
+    truck_id = request.json["id"]
 
     db_connect()
     cursor.execute("USE billdb;")
@@ -77,22 +77,13 @@ def db_connect():
     global cnx
     global cursor
     cnx = mysql.connector.connect(
-    host="localhost",
+    host="bill-db",
     user="root",
-    password="password"
+    password="password",
+    port=3306
     )   
     cursor = cnx.cursor()
-    12345
-
-def DB_INITIALIZATION():
-    db_connect()
-    with open("db/billingdb.sql","r") as f:
-        sql_command = f.read()
-    cursor.execute(sql_command,multi=True)
-    #cnx.commit is overloading the server for some reason ffs
-    cnx.close()
     
 
 if __name__ == "__main__":
-    DB_INITIALIZATION()
     app.run(host='0.0.0.0')
