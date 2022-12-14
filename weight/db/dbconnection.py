@@ -18,7 +18,7 @@ def db_connect():
     global cursor
     cnx = mysql.connector.connect(
     user="root",
-    host="weight-app-weaigt-db-1",
+    host="app-weaigt-db",
     port = 3306,
     password="password"
     )  

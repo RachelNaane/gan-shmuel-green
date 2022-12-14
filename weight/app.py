@@ -146,17 +146,110 @@ def health():
 @app.route("/item/<id>", methods=["GET"])
 def get_item(id):
 
-    #Parsing Args
-    id_input = id
+    #Parsing Args From Function
+    id_input = str(id)
     from_arg = request.args.get("from")
     to_arg = request.args.get("to")
-    
-    #Args are Ok for easy development
 
-    #Query the Db for this is ID
-    #track_Tara = dbconnection.run_sql_command(f"select truckTara from transactions where id={id_input}")
+    # ####DATA FOR TEST
+    # dbconnection.run_inset_query("DELETE FROM transactions")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225025', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225024', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122', '12323', '2022-11-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225029', '12323', '2022-12-05 00:00:00', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122502', '12323', '2022-12-13 13:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('12250', '12323', '2022-12-14 01:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
+    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225', '12323', '2022-12-14 06:06:03', 'out', '123', '5423', '432', '542', '433', '431')")
+
+    # ###########
+
+    #Check The ID in the data base And Return 404 is non exeists 
+    if id_input.startswith('T') or id_input.startswith('K'):
+        isTruck = True
+        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where truck = '{id_input}'")
+        checkID = [i for i in checkID]
+        if len(checkID) == 0:
+            return abort(404)
+    elif id_input.startswith('C'):
+        isTruck = False
+        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers = '{id_input}'")
+        checkID = [i for i in checkID]
+        if len(checkID) == 0:
+            return abort(404)
+    else:
+        return "<h2>you must enter an id of a truch or container<h2>"
     
-    return f"{id_input}:{from_arg}{to_arg}"
+
+    #IN THIS Point We Got ID THAT IS VALID
+    #ARG PARSING
+    if from_arg is None and to_arg is None:
+        tmp1 = str(date.today())
+        date1 = tmp1+" 00:00:00"
+        tmp2 = str(datetime.now())
+        tmp2 = tmp2.split(".")
+        date2 = tmp2[0]
+    elif to_arg is None and from_arg is not None:
+        tmp1 = str(from_arg)
+        tmp1 = tmp1.zfill(14)
+        
+        date1 = datetime.strptime(tmp1, '%Y%m%d%H%M%S')
+        date1 = date1.strftime('%Y-%m-%d %H:%M:%S')
+        
+        tmp2 = str(datetime.now())
+        tmp2 = tmp2.split(".")
+        date2 = tmp2[0]
+    elif from_arg is None and to_arg is not None:
+        return "no such option"
+    else:
+        tmp1 = str(from_arg)
+        tmp1 = tmp1.zfill(14)
+        date1 = datetime.strptime(tmp1, '%Y%m%d%H%M%S')
+        date1 = date1.strftime('%Y-%m-%d %H:%M:%S')
+
+        tmp2 = str(to_arg)
+        tmp2 = tmp2.zfill(14)
+        date2 = datetime.strptime(tmp2, '%Y%m%d%H%M%S')
+        date2 = date2.strftime('%Y-%m-%d %H:%M:%S')
+    
+
+    #check if i got an container id or an truck id
+    if isTruck:
+        #doing the query
+        query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
+        
+    else:
+        checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers = '{id_input}'")
+        #checking if the container has history or not
+        checkifNone = [i for i in checkifNone]
+        if checkifNone[0][0] is None:
+            query = dbconnection.run_sql_command(fr"select id, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
+            item_list = []
+            single_item = {}
+            for item in query:
+                single_item = {
+                    "id":item[0],
+                    "tara":"na",
+                    "sessionid":item[1]
+                }
+                item_list.append(single_item)
+            return item_list
+        else:
+            #query the container
+            query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
+    #creating the json
+    query = [i for i in query]
+    if len(query) == 0:
+        return "no data"
+    item_list = []
+    single_item = {}
+    for item in query:
+        single_item = {
+            "id":item[0],
+            "tara":item[1],
+            "sessionid":item[2]
+        }
+        item_list.append(single_item)
+    return item_list
 
 
 #Return information about a Session Number
