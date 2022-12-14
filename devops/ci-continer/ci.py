@@ -44,12 +44,8 @@ def send_mail(content): # func that sends mail
         with app.open_resource("../../weight/score.txt") as fp:
             msg.attach("../../weight/score.txt", "text/plain", fp.read())
         mail.send(msg) 
-        
-        # message=""
-        # with open("billing/score.txt", "a+") as file:
-        #     for line in file:
-        #         message+=f"{line}\n"
-        # msg.body=message
+       
+
 # post request
 @app.post("/triger")
 def staff_are_pushed():
