@@ -1,24 +1,33 @@
 import mysql.connector
-
 #Creating the connection and the cursor to the mysql data base
+##DEV
+# def db_connect():
+#     global cnx
+#     global cursor
+#     cnx = mysql.connector.connect(
+#     user="root",
+#     host="localhost",
+#     port = 8082,
+#     password="password"
+
+#     )   
+
+#PROD
 def db_connect():
     global cnx
     global cursor
     cnx = mysql.connector.connect(
-    #IF IN DEVELOPMENT
-    # host=localhost,
-    # port = 8082,
-    host="weight-app-weaigt-db-1",
     user="root",
-    password="password",
-    port = 3306
-    )   
+    host="weight-app-weaigt-db-1",
+    port = 3306,
+    password="password"
+    )  
+
     cursor = cnx.cursor()
     
 #Creates the initial database table - Should run only once
 def DB_INITIALIZATION():
     db_connect()
-    
     print(" If this is the only message you see while running this file: Data Base is connected and runing")
     # cnx.commit()
     cnx.close()
