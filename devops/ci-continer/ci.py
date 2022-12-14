@@ -35,7 +35,7 @@ def send_mail(content): # func that sends mail
         mail.send(msg) 
        
 
-# post request
+# post requestt
 @app.post("/triger")
 def staff_are_pushed():
     content = str(request.get_json(silent=True)) #add the jason content to a string we can run tests on 
