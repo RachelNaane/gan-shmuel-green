@@ -114,8 +114,7 @@ def weightget():
    #PUTTING RESOLT INTO A LIST
     query = [i for i in query]
     for item in query:
-        # tracklist.append(item[3])
-        # print(item)
+
         single_item = {
             "id":item[0],
             "direction":item[3],
