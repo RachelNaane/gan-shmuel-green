@@ -28,8 +28,8 @@ def send_mail(content): # func that sends mail
         #send
         email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
         msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
-        with app.open_resource("../../billing/tests/score.txt") as fp:
-            msg.attach("./../billing/tests/score.txt", "text/plain", fp.read())
+        with app.open_resource("../../billing/test/score.txt") as fp:
+            msg.attach("./../billing/test/score.txt", "text/plain", fp.read())
         with app.open_resource("../../weight/tests/score.txt") as fp:
             msg.attach("../../weight/tests/score.txt", "text/plain", fp.read())
         mail.send(msg) 
