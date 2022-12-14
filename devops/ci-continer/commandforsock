@@ -3,6 +3,9 @@ docker run -it --name finaltest -v /var/run/docker.sock:/var/run/docker.sock alp
 
 inside container:
 apk add -u curl
+# sudo apt update -y && sudo apt upgrade -y
+# sudo apt install curl -y
+
 # to install curl
 
 curl -XPOST --unix-socket /var/run/docker.sock http://localhost/images/create?fromImage=mongo:4.4
@@ -17,3 +20,6 @@ curl -XPOST --unix-socket /var/run/docker.sock http://localhost/containers/32060
 
 exit
 
+curl -H 'Content-Type: application/json' --unix-socket /var/run/docker.sock localhost:4243/containers/<service_name>/exec -d '{"Cmd":["date"]}'
+
+curl -H 'Content-Type: application/json' --unix-socket /var/run/docker.sock localhost/containers/postgres_db/start
