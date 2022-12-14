@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #####  1) will do git clone inside test folder and will uplaoad a testing env'.
 #####  2) will save the result in the file score.txt (OK=passes, ERROR = faild).
 #####  3) will close all the test env' and delete the folder test.
@@ -26,9 +26,9 @@ docker compose build -no-cache && docker compose up -d # -f for specifing compos
 wait
 
 #run test
-bash $root_weight/tests/test.sh > score.txt
+bash $root_weight/tests/test.sh > $root_weight/tests/score.txt
 exitcode_weight=$?
-bash $root_billing/tests/test.sh > score.txt
+bash $root_billing/tests/test.sh > $root_billing/tests/score.txt
 exitcode_billing=$?
 
 #down env-testing
