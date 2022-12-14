@@ -5,7 +5,7 @@
 
 root_billing=/app/test/gan-shmuel-green/billing
 root_weight=/app/test/gan-shmuel-green/weight
-root_devops=/app/test/gan-shmuel-green/devops/ci-continer
+#root_devops=/app/test/gan-shmuel-green/devops/ci-continer
 #/app/test/gan-shmuel-green/billing/tests/test.sh
 mkdir test && cd test
 git clone https://github.com/RachelNaane/gan-shmuel-green.git 
@@ -26,9 +26,9 @@ docker compose build -no-cache && docker compose up -d # -f for specifing compos
 wait
 
 #run test
-bash $root_weight/tests/test.sh > $root_weight/tests/score.txt
+bash $root_weight/tests/test.sh #> $root_weight/tests/score.txt
 exitcode_weight=$?
-bash $root_billing/tests/test.sh > $root_billing/tests/score.txt
+bash $root_billing/tests/test.sh #> $root_billing/tests/score.txt
 exitcode_billing=$?
 
 #down env-testing

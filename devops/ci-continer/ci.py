@@ -28,10 +28,10 @@ def send_mail(content): # func that sends mail
         #send
         email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
         msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
-        with app.open_resource("../../billing/score.txt") as fp:
-            msg.attach("./../billing/score.txt", "text/plain", fp.read())
-        with app.open_resource("../../weight/score.txt") as fp:
-            msg.attach("../../weight/score.txt", "text/plain", fp.read())
+        with app.open_resource("../../billing/tests/score.txt") as fp:
+            msg.attach("./../billing/tests/score.txt", "text/plain", fp.read())
+        with app.open_resource("../../weight/tests/score.txt") as fp:
+            msg.attach("../../weight/tests/score.txt", "text/plain", fp.read())
         mail.send(msg) 
        
 
@@ -42,7 +42,7 @@ def staff_are_pushed():
     to_check = str(re.search("refs/heads/main", str(content))) #find the branch of the push
     if to_check != "None": # if barnch = main send emails and run tests
         print("merge to main!!!!!.... \n starting testings")  
-        #os.system("bash phase1.sh")
+        os.system("bash phase1.sh")
         send_mail(content)                                         #########   figure out the place for us to send
     return "push recived ... mails will be sent when merged with main"
     
