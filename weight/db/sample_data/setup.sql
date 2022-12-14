@@ -70,6 +70,46 @@ INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTar
 INSERT INTO transactions (sessionid, datetime, containers, bruto, produce) VALUES ('82323', '2022-11-11', '5423', '432', '431');
 
 
+
+-- Containers
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-35434',296,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-73281',273,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-35537',292,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-49036',272,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-85957',274,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-57132',306,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-80015',285,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-40162',255,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-66667',238,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-65481',306,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-65816',270,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-38068',267,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-36882',286,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-38559',253,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-83754',247,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-40277',307,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-55516',260,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-45237',301,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-69828',269,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-44997',250,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-52273',308,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-63478',245,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-42418',286,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-86865',299,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-38552',266,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-81185',242,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-71151',300,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-78131',273,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-61969',289,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-82193',308,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-85358',259,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-47634',285,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-83570',278,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-45628',288,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-70986',251,'kg');
+INSERT INTO containers_registered (container_id,weight,unit) VALUES ('C-54804',297,'kg');
+
+
 --
 -- Dumping data for table `test`
 --
