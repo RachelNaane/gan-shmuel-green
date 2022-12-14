@@ -7,19 +7,20 @@ root_billing=/app/test/gan-shmuel-green/billing
 root_weight=/app/test/gan-shmuel-green/weight
 #root_devops=/app/test/gan-shmuel-green/devops/ci-continer
 #/app/test/gan-shmuel-green/billing/tests/test.sh
-mkdir test && cd test
+mkdir test 
+cd test || { echo "cd failed"; exit 1; }
 git clone https://github.com/RachelNaane/gan-shmuel-green.git 
 wait
 
 #up env-testing
-cd $root_weight
+cd $root_weight || { echo "cd failed"; exit 1; }
 
 echo -e "APP_PORT=8086\nDB_PORT=8087\nVOLUME=weight-test-volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
 wait
 
 
-cd $root_billing
+cd $root_billing || { echo "cd failed"; exit 1; }
 
 echo -e "APP_PORT=8088\nDB_PORT=8089\nVOLUME=billing-test-volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
@@ -32,16 +33,16 @@ bash $root_billing/tests/test.sh #> $root_billing/tests/score.txt
 exitcode_billing=$?
 
 #down env-testing
-cd $root_weight
+cd $root_weight || { echo "cd failed"; exit 1; }
 docker compose down -v
 wait
 
-cd $root_billing
+cd $root_billing || { echo "cd failed"; exit 1; }
 docker compose down -v
 wait
 
 #delete test dir
-cd /app
+cd /app || { echo "cd failed"; exit 1; }
 rm -fr test
 
 # add conclusion message to report
