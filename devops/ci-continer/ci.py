@@ -42,7 +42,7 @@ def staff_are_pushed():
     to_check = str(re.search("refs/heads/main", str(content))) #find the branch of the push
     if to_check != "None": # if barnch = main send emails and run tests
         print("merge to main!!!!!.... \n starting testings")  
-        #os.system("bash start_testing.sh")
+        #os.system("bash phase1.sh")
         send_mail(content)                                         #########   figure out the place for us to send
     return "push recived ... mails will be sent when merged with main"
     
