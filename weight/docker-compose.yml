@@ -23,4 +23,9 @@ services:
       timeout: 20s
       retries: 10
       start_period: 30s
+
+networks:
+  default:
+    name: ${NETWORK}
+    external: true
     
