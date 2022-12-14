@@ -1,0 +1,3 @@
+Request to /health was successful.
+Request to /weight was successful.
+Request to /unknown was successful.
