@@ -23,14 +23,14 @@ wait
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
 echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume" > .env
-docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
+docker-compose build --no-cache && docker-compose up -d # -f for specifing compose file?
 wait
 
 
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
 echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume" > .env
-docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
+docker-compose build --no-cache && docker-compose up -d # -f for specifing compose file?
 wait
 
 # run test
@@ -41,11 +41,11 @@ exitcode_billing=$?
 
 # down env-testing
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
-docker compose down -v
+docker-compose down -v
 wait
 
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
-docker compose down -v
+docker-compose down -v
 wait
 
 # delete test dir

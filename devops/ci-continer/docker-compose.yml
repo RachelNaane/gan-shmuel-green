@@ -3,6 +3,7 @@ version: '2'
 services:  # containers. same as docker run
   
   ci-container: # a friendly name. this is also DNS name inside network
+    container_name: ci-container
     build: .
     ports: 
       - "8085:5000"
