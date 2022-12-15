@@ -25,7 +25,7 @@ cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; curl
 echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=test-net" > .env
 docker-compose build --no-cache || { echo "could not build the image for weight"; curl localhost:5000/send_mail; exit 1; }
 wait
-docker-compose up -d || { echo "could not run the dockers for weight "; curl localhost:5000/send_mail; exit 1;}
+docker-compose up --no-recreate -d || { echo "could not run the dockers for weight "; curl localhost:5000/send_mail; exit 1;}
 wait
 
 
@@ -34,7 +34,7 @@ cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |te
 echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=test-net"> .env
 docker-compose build --no-cache || { echo "could not build the image for weight"; curl localhost:5000/send_mail; exit 1; }
 wait 
-docker-compose up -d || { echo "could not run the dockers for weight "; curl localhost:5000/send_mail; exit 1;}
+docker-compose up -d --no-recreate || { echo "could not run the dockers for weight "; curl localhost:5000/send_mail; exit 1;}
 wait
 
 # run test
