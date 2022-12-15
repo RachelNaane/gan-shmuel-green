@@ -32,13 +32,15 @@ wait
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
 echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume" > .env
-docker-compose build --no-cache && docker-compose up -d # -f for specifing compose file?
+docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
+wait 
+docker-compose up -d || { echo "could not run the dockers for weight "; exit 1; }
 wait
 
 # run test
-bash $root_weight/tests/test.sh
+bash $root_weight/tests/test.sh || { echo "no test.sh file found for weight"; exit 1; }
 exitcode_weight=$?
-bash $root_billing/tests/test.sh
+bash $root_billing/tests/test.sh || { echo "no test.sh file found for billing"; exit 1; }
 exitcode_billing=$?
 
 # down env-testing
