@@ -6,35 +6,6 @@ import re
 app = Flask(__name__)
 
 
-
-def find_mail(content): # crazy complex function that do some magic on a string 
-	lst = str(re.findall('\S+@\S+', content))  
-	email_address = re.sub(r'[,,\']', '',lst[-1])
-	return email_address
-
-
-def send_mail(content): # func that sends mail
-        # mail conf
-        app.config['MAIL_SERVER']='smtp.gmail.com'
-        app.config['MAIL_PORT'] = 587
-        app.config['MAIL_USERNAME'] = 'ratash3@gmail.com'
-        app.config['MAIL_PASSWORD'] = 'eksghxoohjkwcqck'
-        app.config['MAIL_USE_TLS'] = True
-        app.config['MAIL_USE_SSL'] = False
-        app.config['MAIL_DEFAULT_SENDER']= 'ratash3@gmail.com'
-        app.config['MAIL_MAX_EMAILS'] = None
-        app.config['MAIL_ASCII_ATTACHMENTS'] = False
-        mail = Mail(app)
-        #send
-        email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
-        msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
-        with app.open_resource("../../billing/tests/score.txt") as fp:
-            msg.attach("./../billing/tests/score.txt", "text/plain", fp.read())
-        with app.open_resource("../../weight/tests/score.txt") as fp:
-            msg.attach("../../weight/tests/score.txt", "text/plain", fp.read())
-        mail.send(msg) 
-       
-
 # post requestt
 @app.post("/triger")
 def staff_are_pushed():
@@ -43,7 +14,7 @@ def staff_are_pushed():
     if to_check != "None": # if barnch = main send emails and run tests
         print("merge to main!!!!!.... \n starting testings")  
         os.system("bash phase1.sh")
-        send_mail(content)                                         #########   figure out the place for us to send
+        #send_mail(content)                                         #########   figure out the place for us to send
     return "push recived ... mails will be sent when merged with main"
     
 
@@ -60,4 +31,4 @@ def health_check():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",debug=True)
