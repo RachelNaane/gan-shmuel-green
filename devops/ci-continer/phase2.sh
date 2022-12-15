@@ -27,5 +27,3 @@ docker-compose down
 echo -e "APP_PORT=8081\nDB_PORT=8082\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=production-net" > .env
 docker-compose up -p test -d || { echo "could not run weight containers"; exit 1; }
 wait
-
-python3 mail.py
