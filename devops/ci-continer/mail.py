@@ -3,7 +3,11 @@ from flask_mail import Mail , Message
 
 mail = Mail()
 
+
 app = Flask(__name__)
+
+app.app_context()
+
 mail.init_app(app) 
 
 def send_mail(): # func that sends mail
