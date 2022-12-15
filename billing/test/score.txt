@@ -1,0 +1,2 @@
+Request to /health was successful.
+Request to /rates was successful.
