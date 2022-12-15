@@ -15,15 +15,15 @@ cd /app/gan-shmuel-green || { echo "'cd /app/gan-shmuel-green' has failed"; exit
 git pull origin main || { echo "pull from rep failed";exit 1; }
 
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)"; exit 1; }
-docker-compose down
+docker-compose -p prod down
 
 echo -e "APP_PORT=8083\nDB_PORT=8084\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=production-net" > .env
-docker-compose -p test up -d || { echo "could not run billing containers"; exit 1; }
+docker-compose -p prod up -d || { echo "could not run billing containers"; exit 1; }
 wait
 
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; exit 1; }
-docker-compose down
+docker-compose -p prod down
 
 echo -e "APP_PORT=8081\nDB_PORT=8082\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=production-net" > .env
-docker-compose -p test up -d || { echo "could not run weight containers"; exit 1; }
+docker-compose -p prod up -d || { echo "could not run weight containers"; exit 1; }
 wait
