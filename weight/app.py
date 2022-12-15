@@ -1,6 +1,6 @@
 from flask import Flask, request, abort, jsonify
 from datetime import datetime, date
-import datetime
+# import datetime
 from db import dbconnection
 import json, re,csv,os
 
@@ -140,12 +140,12 @@ def weightget():
     #Checking If Query Parameter for the date was given and if so format it to the Y-%m-%d %H:%M:%S Format (2001-04-11 14:0:0)
     if date_start is not None:
         timestamp = pad_with_zeros(date_start)
-        date_start = datetime.datetime.strptime(timestamp, '%Y%m%d%H%M%S')
+        date_start = datetime.strptime(timestamp, '%Y%m%d%H%M%S')
         date_start = date_start.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_end is not None:
         timestamp_end = pad_with_zeros(date_end)
-        date_end = datetime.datetime.strptime(timestamp_end, '%Y%m%d%H%M%S')
+        date_end = datetime.strptime(timestamp_end, '%Y%m%d%H%M%S')
         date_end = date_end.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_start is None:
@@ -155,7 +155,7 @@ def weightget():
 
     if date_end is None:
         #Value of Now
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
         date_end = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
     
