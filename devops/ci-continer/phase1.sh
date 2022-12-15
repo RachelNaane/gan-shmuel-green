@@ -38,9 +38,9 @@ docker-compose -p prod up -d || { echo "could not run the dockers for weight "; 
 wait
 
 # run test
-bash $root_weight/tests/test.sh || { echo "no test.sh file found for weight";  curl localhost:5000/send_mail; exit 1;}
+bash $root_weight/tests/test.sh
 exitcode_weight=$?
-bash $root_billing/tests/test.sh || { echo "no test.sh file found for billing"; curl localhost:5000/send_mail; exit 1;}
+bash $root_billing/tests/test.sh
 exitcode_billing=$?
 
 # down env-testing
