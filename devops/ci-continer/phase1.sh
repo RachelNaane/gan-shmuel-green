@@ -15,45 +15,45 @@ billing_mysql_volume="/docker-entrypoint-initdb.d"
 weight_mysql_volume="/docker-entrypoint-initdb.d"
 
 mkdir test 
-cd test || { echo "'cd test' failed "; python3 mail.py ;exit 1;}
-git clone https://github.com/RachelNaane/gan-shmuel-green.git || { echo "clone from rep failed"; python3 mail.py ;exit 1;}
+cd test || { echo "'cd test' failed "; python3 /app/mail.py ;exit 1;}
+git clone https://github.com/RachelNaane/gan-shmuel-green.git || { echo "clone from rep failed"; python3 /app/mail.py ;exit 1;}
 wait
 
 # up env-testing
-cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; python3 mail.py ;exit 1;}
+cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; python3 /app/mail.py ;exit 1;}
 
 echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=production-net" > .env
 docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
 wait
-docker-compose up -d || { echo "could not run the dockers for weight "; python3 mail.py ;exit 1;}
+docker-compose up -d || { echo "could not run the dockers for weight "; python3 /app/mail.py ;exit 1;}
 wait
 
 
-cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; python3 mail.py ;exit 1;}
+cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; python3 /app/mail.py ;exit 1;}
 
 echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=production-net"> .env
 docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
 wait 
-docker-compose up -d || { echo "could not run the dockers for weight "; python3 mail.py ;exit 1;}
+docker-compose up -d || { echo "could not run the dockers for weight "; python3 /app/mail.py ;exit 1;}
 wait
 
 # run test
-bash $root_weight/tests/test.sh || { echo "no test.sh file found for weight"; python3 mail.py ; exit 1;}
+bash $root_weight/tests/test.sh || { echo "no test.sh file found for weight"; python3 /app/mail.py ; exit 1;}
 exitcode_weight=$?
-bash $root_billing/tests/test.sh || { echo "no test.sh file found for billing"; python3 mail.py ;exit 1;}
+bash $root_billing/tests/test.sh || { echo "no test.sh file found for billing"; python3 /app/mail.py ;exit 1;}
 exitcode_billing=$?
 
 # down env-testing
-cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; python3 mail.py ;exit 1;}
+cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; python3 /app/mail.py ;exit 1;}
 docker-compose down -v
 wait
 
-cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)"; python3 mail.py ;exit 1;}
+cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)"; python3 /app/mail.py ;exit 1;}
 docker-compose down -v
 wait
 
 # delete test dir
-cd /app || { echo "'cd /app' failed"; python3 mail.py ;exit 1;}
+cd /app || { echo "'cd /app' failed"; python3 /app/mail.py ;exit 1;}
 rm -fr test
 
 # add conclusion message to report
@@ -71,7 +71,7 @@ if [ $exitcode_billing -eq 0 ] && [ $exitcode_weight -eq 0 ]; then
     conclusion="new version up in production. good work everyone!"
 fi
 
-echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight || { echo "problem"; python3 mail.py ;exit 1;}
-echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem"; python3 mail.py ;exit 1;}
+echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight || { echo "problem"; python3 /app/mail.py ;exit 1;}
+echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem"; python3 /app/mail.py ;exit 1;}
 
-python3 mail.py
+python3 /app/mail.py
