@@ -1,11 +1,13 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 from datetime import datetime, date
+# import datetime
 from db import dbconnection
 import json, re,csv,os
 
 
 
 app = Flask(__name__)
+
 
 
 #This is the Post Mehthod Implemented by yossi
@@ -122,74 +124,93 @@ def weightpost():
         return "\nOK"
         
 
-#Get Weight return json of the last time according to a time zone
+"""
+return a list of json object containing the following information:
+id, direction, bruto, neto, produce, containers.
+This information Goes to the billing team in order for them to keep in track with the supply.
+"""
 @app.route("/weight", methods=["GET"])
 def weightget():
-    #ARGS PARSE from url
-    #Time Looks like yyyymmddhhmmss
-    
-    date_start = request.args.get("from")
-    date_end = request.args.get("to")
-    #filter
+
+    #Parsing Query Parameters From the url
+    date_start = request.args.get("t1")
+    date_end = request.args.get("t2")
     filt = request.args.get("filter")
 
-    #Getting the date from the args
+    #Checking If Query Parameter for the date was given and if so format it to the Y-%m-%d %H:%M:%S Format (2001-04-11 14:0:0)
     if date_start is not None:
-        timestamp = str(date_start)
-        timestamp = timestamp.zfill(14)
-        # Create a datetime object from the timestamp
+        timestamp = pad_with_zeros(date_start)
         date_start = datetime.datetime.strptime(timestamp, '%Y%m%d%H%M%S')
         date_start = date_start.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_end is not None:
-        timestamp_end = str(date_end)
-        timestamp_end = timestamp_end.zfill(14)
+        timestamp_end = pad_with_zeros(date_end)
         date_end = datetime.datetime.strptime(timestamp_end, '%Y%m%d%H%M%S')
         date_end = date_end.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_start is None:
-        #give value of 0000 and the date of today
+        #Give value of 0000 and the date of today
         tmp1 = str(date.today())
         date_start = tmp1+" 00:00:00"
 
     if date_end is None:
-        #value of now:
+        #Value of Now
         current_time = datetime.datetime.now()
         date_end = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
+    
+    #Basic qurey for DB to
+    basic_query = fr"SELECT id, direction, bruto, neto, produce, containers, truckTara, truck FROM transactions"
+
     #Adjust the query according to the filter
     if filt is None:
-        query = dbconnection.run_sql_command(fr"select * from transactions where datetime >= '{date_start}' AND datetime <= '{date_end}';")
+        query = dbconnection.run_sql_command(fr"{basic_query} where datetime >= '{date_start}' AND datetime <= '{date_end}';")
     else:
         times = fr"AND datetime >= '{date_start}' AND datetime <= '{date_end}'"
         query = []
         filter_all = filt.split(',')
         if "in" in filter_all:
-            query += dbconnection.run_sql_command(f"select * from transactions where direction = 'in' {times}")
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'in' {times}")
         if "out" in filter_all:
-            query += dbconnection.run_sql_command(f"select * from transactions where direction = 'out' {times}")
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'out' {times}")
         if "none" in filter_all:
-            query += dbconnection.run_sql_command(f"select * from transactions where direction = 'none' {times}")
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'none' {times}")
+    
+    #The sql query result in one big list with each result in a tuple so we need to fetch them out
+    query = [i for i in query]
+    print(query)
 
     item_list = []
     single_item = {}
-   #PUTTING RESOLT INTO A LIST
-    query = [i for i in query]
     
-
+    #Formating the items from the query to a diconary
+    #id[[0]] direction[[1]] bruto[2] neto[[3]] produce[[4]] continers[5]
     for item in query:
+        #getting list of containers
+        if item[5] is not None:
+            conteiners = item[5].split(',')
+        else:
+            containers=""
+        ##Checking for containers with unkown tara
+        neto = ""
+        if item[6] is None:
+            neto = "N/A"
+        else:
+            neto = item[3]     
 
+        #Creation of the diconarary
+        #Id is the ID of a truck
         single_item = {
-            "id":item[0],
-            "direction":item[3],
-            "bruto":item[4],
-            "neto":item[5],
-            "produce":item[6],
-            "containers":item[7]
+            "id":item[7],
+            "direction":item[1],
+            "bruto":item[2],
+            "neto":neto,
+            "produce":item[4],
+            "containers":conteiners
         }
         item_list.append(single_item)
-   
-    return item_list
+
+    return jsonify(item_list)
 
 @app.route("/batch", methods=["POST"])
 def batch():
@@ -250,43 +271,31 @@ def health():
 #Shamir work
 @app.route("/item/<id>", methods=["GET"])
 def get_item(id):
-
-    #Parsing Args From Function
-    id_input = str(id)
+    
+#Parsing Args
+    id_input = id
+    id_input = str(id_input)
     from_arg = request.args.get("from")
     to_arg = request.args.get("to")
 
-    # ####DATA FOR TEST
-    # dbconnection.run_inset_query("DELETE FROM transactions")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225025', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225024', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122', '12323', '2022-11-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225029', '12323', '2022-12-05 00:00:00', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122502', '12323', '2022-12-13 13:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('12250', '12323', '2022-12-14 01:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    # dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225', '12323', '2022-12-14 06:06:03', 'out', '123', '5423', '432', '542', '433', '431')")
-
-    # ###########
-
-    #Check The ID in the data base And Return 404 is non exeists 
-    if id_input.startswith('T') or id_input.startswith('K'):
+    #checking if id is exist
+    if id_input.startswith('T'):
         isTruck = True
         checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where truck = '{id_input}'")
         checkID = [i for i in checkID]
         if len(checkID) == 0:
             return abort(404)
-    elif id_input.startswith('C'):
+    elif id_input.startswith('C') or id_input.startswith('K'):
         isTruck = False
-        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers = '{id_input}'")
+        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers like '%{id_input}%'")
         checkID = [i for i in checkID]
         if len(checkID) == 0:
             return abort(404)
     else:
-        return "<h2>you must enter an id of a truch or container<h2>"
+        return "you must enter an id of a truch or container"
     
 
-    #IN THIS Point We Got ID THAT IS VALID
-    #ARG PARSING
+    #checking how many arguments I got and creating the dates for the query!
     if from_arg is None and to_arg is None:
         tmp1 = str(date.today())
         date1 = tmp1+" 00:00:00"
@@ -318,65 +327,68 @@ def get_item(id):
     
 
     #check if i got an container id or an truck id
+    sessions = []
     if isTruck:
         #doing the query
-        query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
+        temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
         
+        for item in temp:
+            sessions.append(item[0])
+
+        temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+        tara = temp[0][0]
     else:
-        checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers = '{id_input}'")
+        checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers like '%{id_input}%'")
         #checking if the container has history or not
-        checkifNone = [i for i in checkifNone]
+        # checkifNone = [i for i in checkifNone]
         if checkifNone[0][0] is None:
-            query = dbconnection.run_sql_command(fr"select id, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
-            item_list = []
-            single_item = {}
-            for item in query:
-                single_item = {
-                    "id":item[0],
-                    "tara":"na",
-                    "sessionid":item[1]
-                }
-                item_list.append(single_item)
-            return item_list
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+            for item in temp:
+                sessions.append(item[0])
+            result = {
+                "id": id_input,
+                "tara": "na",
+                "sessions": sessions
+            }
+            return jsonify(result)
+
         else:
-            #query the container
-            query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
+
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+        
+            for item in temp:
+                sessions.append(item[0])
+                print(item)
+            print(sessions)
+            temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+            tara = temp[0][0]
     #creating the json
-    query = [i for i in query]
-    if len(query) == 0:
-        return "no data"
-    item_list = []
-    single_item = {}
-    for item in query:
-        single_item = {
-            "id":item[0],
-            "tara":item[1],
-            "sessionid":item[2]
-        }
-        item_list.append(single_item)
-    return item_list
+    result = {
+        "id": id_input,
+        "tara": tara,
+        "sessions": sessions
+    }
+    return jsonify(result)
 
 
-#Return information about a Session Number
+#Return information about a Session Number, IN OUT of a truck, or a stand alone container
 @app.route("/session/<id>", methods=["GET"])
 def get_session(id):
-    alldata = dbconnection.run_sql_command(f"select * from transactions where sessionid={id}")
+    query = "select id, truck, bruto, truckTara, neto, direction, containers from transactions"
+    alldata = dbconnection.run_sql_command(f"{query} where sessionid={id}")
     listdata = [i for i in alldata]
-    print (listdata)
-    # dict_out = {}
+    # print(listdata)
     if len(listdata) == 0:
         return abort(404)
-
-    if listdata[-1][3] == 'out':
-          dict_out = {"id":id , "truck":listdata[-1][4] , "bruto":listdata[0][6],"tara":listdata[-1][7],"neto":listdata[-1][8]}
-    elif listdata[0][3] == 'in':
-           dict_out = {"id":id , "truck":listdata[0][4] , "bruto":listdata[0][6]}
+    if listdata[-1][5] == 'out':
+          dict_out = {"id":str(listdata[0][0]) , "truck":listdata[0][1] , "bruto":listdata[0][2],"tara":listdata[-1][3],"neto":listdata[-1][4]}
+    elif listdata[0][5] == 'in':
+           dict_out = {"id":str(listdata[0][0]) , "truck":listdata[0][1] , "bruto":listdata[0][2]}
     else: 
-          dict_out = {"id":id ,"truck":"N/A" ,"container":listdata[0][5] , "neto":listdata[0][8]}
+          dict_out = {"id":str(listdata[0][0]) ,"truck":"N/A" ,"container":listdata[0][6] , "neto":listdata[0][8]}
          
-    return dict_out
+    return jsonify(dict_out)
 
-# GET /unknown
 # Returns a list of all recorded containers that have unknown weight:
 # ["id1","id2",...]
 @app.route("/unknown")
@@ -386,10 +398,16 @@ def return_unkown_containers():
     for item in containers:
         if item[1] == None:
             list_of_unkown.append(item[0])
-    print(list_of_unkown)
-
-
     return list_of_unkown
+
+#This function help to be flexible with the way we get dates
+def pad_with_zeros(num):
+    num_str = str(num)
+    num_zeros = 14 - len(num_str) 
+    if num_zeros > 0:
+        return num_str + "0" * num_zeros
+    else:
+        return num_str
 
 
 
