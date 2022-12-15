@@ -4,27 +4,32 @@
 #####  3) will close all the test env' and delete the folder test.
 
 # full paths
-root_billing=/app/test/gan-shmuel-green/billing
-root_weight=/app/test/gan-shmuel-green/weight
-full_score_path_weight=/app/test/gan-shmuel-green/weight/tests/score.txt
-full_score_path_billing=/app/test/gan-shmuel-green/billing/tests/score.txt
+root_billing="/app/test/gan-shmuel-green/billing"
+root_weight="/app/test/gan-shmuel-green/weight"
+full_score_path_weight="/app/test/gan-shmuel-green/weight/tests/score.txt"
+full_score_path_billing="/app/test/gan-shmuel-green/billing/tests/score.txt"
+
+billing_host_volume="/var/lib/docker/volumes/billing-test-volume/_data"
+weight_host_volume="/var/lib/docker/volumes/weight-test-volume/_data"
+billing_mysql_volume="/docker-entrypoint-initdb.d"
+weight_mysql_volume="/docker-entrypoint-initdb.d"
 
 mkdir test 
 cd test || { echo "'cd test' failed "; exit 1; }
-git clone https://github.com/RachelNaane/gan-shmuel-green.git 
+git clone https://github.com/RachelNaane/gan-shmuel-green.git || { echo "clone from rep failed"; exit 1; }
 wait
 
 # up env-testing
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
-echo -e "APP_PORT=8086\nDB_PORT=8087\nVOLUME=weight-test-volume" > .env
+echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
 wait
 
 
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
-echo -e "APP_PORT=8088\nDB_PORT=8089\nVOLUME=billing-test-volume" > .env
+echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume" > .env
 docker compose build -no-cache && docker compose up -d # -f for specifing compose file?
 wait
 
