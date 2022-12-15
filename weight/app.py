@@ -171,28 +171,19 @@ def get_item(id):
     to_arg = request.args.get("to")
 
 
-    dbconnection.run_inset_query("DELETE FROM transactions")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225025', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225024', '12323', '2022-12-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122', '12323', '2022-11-23 14:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225029', '12323', '2022-12-05 00:00:00', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('122502', '12323', '2022-12-13 13:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('12250', '12323', '2022-12-14 01:02:03', 'out', '123', '5423', '432', '542', '433', '431')")
-    dbconnection.run_inset_query(fr"INSERT INTO transactions (id, sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1225', '12323', '2022-12-14 06:06:03', 'out', '123', '5423', '432', '542', '433', '431')")
-
     #checking if id is exist
     if id_input.startswith('T'):
         isTruck = True
         checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where truck = '{id_input}'")
         checkID = [i for i in checkID]
         if len(checkID) == 0:
-            return "404"
-    elif id_input.startswith('C'):
+            return abort(404)
+    elif id_input.startswith('C') or id_input.startswith('K'):
         isTruck = False
         checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers = '{id_input}'")
         checkID = [i for i in checkID]
         if len(checkID) == 0:
-            return "404"
+            return abort(404)
     else:
         return "you must enter an id of a truch or container"
     
@@ -231,8 +222,9 @@ def get_item(id):
     #check if i got an container id or an truck id
     if isTruck:
         #doing the query
+        print("date1="+date1)
+        print("date2="+date2)
         query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
-        
     else:
         checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers = '{id_input}'")
         #checking if the container has history or not
