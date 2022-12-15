@@ -8,3 +8,6 @@ MarkupSafe==2.1.1
 mysql-connector==2.2.9
 Werkzeug==2.2.2
 zipp==1.0.0
+xlrd==2.0.1
+pandas==1.5.2
+openpyxl==3.0.10

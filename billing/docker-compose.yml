@@ -20,8 +20,8 @@ services:
     ports:
       - "${DB_PORT}:3306"
     volumes:
-      - ${BILLING_TEST_VOLUME}:/docker-entrypoint-initdb.d
-      - ${BILLING_PROD_VOLUME}:/var/lib.mysql
+      - ${HOST_VOLUME}:${MYSQL_VOLUME}
+      #- "./db/data:/var/lib/mysql"
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s
@@ -30,6 +30,6 @@ services:
     
 networks:
   default:
-    name: production-net
+    name: ${NETWORK}
     external: true
 
