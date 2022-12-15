@@ -74,4 +74,4 @@ fi
 echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight || { echo "problem"; python3 /app/mail.py ;exit 1;}
 echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem"; python3 /app/mail.py ;exit 1;}
 
-python3 /app/mail.py
+curl localhost/send_mail
