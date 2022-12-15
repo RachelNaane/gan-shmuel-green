@@ -5,6 +5,6 @@ RUN apk add docker && apk add docker-compose
 WORKDIR /app
 COPY . .
 RUN pip install -r req.txt
-RUN  apk add bash && apk add git
+RUN  apk add bash && apk add git && apk add curl 
 
 ENTRYPOINT ["python3", "ci.py"]
