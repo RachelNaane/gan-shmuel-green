@@ -17,7 +17,7 @@ services:
     volumes:
       - ${HOST_VOLUME}:${MYSQL_VOLUME}
     ports:
-      - ${DB_PROD}:3306
+      - ${DB_PORT}:3306
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s

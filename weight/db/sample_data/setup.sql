@@ -56,8 +56,8 @@ describe transactions;
 
 
 -- DUMPING DATA TO THE DB
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('12323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('12323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('1', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
 
 INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('22323', '2022-12-11', 'in', '123412315', '5423', '432', '300', '433', '431');
 INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');

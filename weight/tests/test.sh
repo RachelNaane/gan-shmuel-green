@@ -7,11 +7,11 @@ API_BASE_URL="http://localhost:8081"
 # Declare an empty array to store the responses from the requests
 declare -a RESPONSES
 
-# clear file
-> tests/score.txt
+# Clear file
+> score.txt
 
 # Define an array of the endpoints to test
-ENDPOINTS=( "/health" "/weight" "/unknown" )
+ENDPOINTS=( "/health" "/weight" "/unknown" "/session/1" )
 
 # Iterate over the array of endpoints
 for endpoint in "${ENDPOINTS[@]}"; do
@@ -21,19 +21,24 @@ for endpoint in "${ENDPOINTS[@]}"; do
   # Check the status code of the response
   if [[ $response == *"200"* ]]; then
     # If the status code is 200, echo that the request was successful
-    echo "Request to $endpoint was successful." >> tests/score.txt
+    echo "Request to $endpoint was successful." >> score.txt
   else
     # Otherwise, echo that the request failed
-    echo "Request to $endpoint failed." >> tests/score.txt
+    echo "Request to $endpoint failed." >> score.txt
   fi
   
 done
 
-if [[ ${RESPONSES[@]} =~ "200" ]]; then
-  # If all the responses are 200, return 0
-  echo "worked!"
-  exit 0 
-else
-  # Otherwise, return 1
-  exit 1
-fi
+
+# Check if all items in the array equal 200
+for item in "${RESPONSES[@]}"; do
+  if [[ $item == 200 ]]; then
+    continue
+  else
+    echo "TEST FAILED"
+    exit 1
+  fi
+done
+
+echo "Test Run successfully"
+exit 0
