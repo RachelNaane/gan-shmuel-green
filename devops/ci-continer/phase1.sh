@@ -71,5 +71,5 @@ if [ $exitcode_billing -eq 0 ] && [ $exitcode_weight -eq 0 ]; then
     conclusion="new version up in production. good work everyone!"
 fi
 
-echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight
-echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing
+echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight || { echo "problem"; exit 1;}
+echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem"; exit 1;}
