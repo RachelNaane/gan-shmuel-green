@@ -188,7 +188,7 @@ def get_item(id):
         return "you must enter an id of a truch or container"
     
 
-    #checking how many arguments I got and creating the dates for the query
+    #checking how many arguments I got and creating the dates for the query!
     if from_arg is None and to_arg is None:
         tmp1 = str(date.today())
         date1 = tmp1+" 00:00:00"
