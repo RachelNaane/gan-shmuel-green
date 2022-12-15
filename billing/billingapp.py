@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory, jsonify
 import os.path
 import mysql.connector
+import pandas as pd
 
 
 app = Flask(__name__)
+
 
 @app.route("/truck/<id>", methods=["PUT"])
 def update_provider_id(id):
@@ -21,7 +23,6 @@ def update_provider_id(id):
         return make_response("<h1>Updated</h1>",200)  
     except:
         return make_response("<h1>Failure</h1>",500)
-
 
 
 @app.route("/truck", methods=["POST"])
@@ -56,15 +57,41 @@ def health():
     return make_response("<h1>OK</h1>",200)
 
 
-@app.route("/rates", methods=["GET"])
+@app.route("/rates", methods=["GET","POST"])
 def get_rates():
-    file_to_get = request.json["filename"]  
-    if not os.path.isfile(f"in/{file_to_get}"):
-        return make_response("<h1>Sorry, The File Doesn't Exist</h1>",500)
-    uploads = os.path.join(app.root_path,"in")
-    respone = make_response(send_from_directory(path="rates.xlsx",directory=uploads))
-    respone.status_code = 200
-    return respone 
+    if request.method=="GET":
+        file_to_get = request.json["filename"]  
+        if not os.path.isfile(f"in/{file_to_get}"):
+            return make_response("<h1>Sorry, The File Doesn't Exist</h1>",500)
+        uploads = os.path.join(app.root_path,"in")
+        respone = make_response(send_from_directory(path="rates.xlsx",directory=uploads))
+        respone.status_code = 200
+        return respone 
+        
+    else:
+        file_name = request.json["filename"]
+        if not os.path.isfile(f"in/{file_name}"):        
+            return make_response("<h1>Sorry, The File Doesn't Exist</h1>",500) 
+        db_connect()
+        cursor.execute("USE billdb;") 
+
+        d1 = pd.read_excel(f"in/{file_name}")
+        for index, row in d1.iterrows():
+            curr_prod = row["Product"]
+            curr_rate = row["Rate"]
+            curr_scope = row["Scope"]
+            cursor.execute(f"select * from Rates where product_id = '{curr_prod}';") 
+            is_a_doc_product = cursor.fetchall() 
+            if is_a_doc_product: 
+                cursor.execute(f"select * from Rates WHERE (product_id='{curr_prod}' AND scope='{curr_scope}');")
+                need_to_update_rate = cursor.fetchall() 
+                if need_to_update_rate:
+                    cursor.execute(f"UPDATE Rates SET rate = {curr_rate}  WHERE product_id = '{curr_prod}' AND scope='{curr_scope}';")
+                else:
+                    cursor.execute(f"insert into Rates values ('{curr_prod}',{curr_rate},'{curr_scope}');")
+            else:
+                cursor.execute(f"insert into Rates values ('{curr_prod}',{curr_rate},'{curr_scope}');")
+        return make_response("<h1>OK</h1>",200)
 
 
 @app.route("/provider/<provider_id>", methods=["PUT"])
@@ -106,7 +133,7 @@ def db_connect():
     password="password",
     port=3306
     )   
-    cursor = cnx.cursor()
+    cursor = cnx.cursor(buffered=True)
     
 
 if __name__ == "__main__":
