@@ -23,7 +23,9 @@ wait
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
 
 echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume" > .env
-docker-compose build --no-cache && docker-compose up -d # -f for specifing compose file?
+docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
+wait
+docker-compose up -d || { echo "could not run the dockers for weight "; exit 1; }
 wait
 
 
