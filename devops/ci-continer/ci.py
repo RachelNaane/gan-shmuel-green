@@ -43,6 +43,7 @@ def health_check():
 @app.get("/send_mail")
 def send_mail():
     #send
+    os.system("pwd")
     email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
     msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
     with app.open_resource("/app/test/gan-shmuel-green/billing/tests/score.txt") as fp:
