@@ -170,7 +170,6 @@ def get_item(id):
     from_arg = request.args.get("from")
     to_arg = request.args.get("to")
 
-
     #checking if id is exist
     if id_input.startswith('T'):
         isTruck = True
@@ -180,7 +179,7 @@ def get_item(id):
             return abort(404)
     elif id_input.startswith('C') or id_input.startswith('K'):
         isTruck = False
-        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers = '{id_input}'")
+        checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where containers like '%{id_input}%'")
         checkID = [i for i in checkID]
         if len(checkID) == 0:
             return abort(404)
@@ -220,44 +219,48 @@ def get_item(id):
     
 
     #check if i got an container id or an truck id
+    sessions = []
     if isTruck:
         #doing the query
-        print("date1="+date1)
-        print("date2="+date2)
-        query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
+        temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
+        
+        for item in temp:
+            sessions.append(item[0])
+
+        temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+        tara = temp[0][0]
     else:
-        checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers = '{id_input}'")
+        checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers like '%{id_input}%'")
         #checking if the container has history or not
-        checkifNone = [i for i in checkifNone]
+        # checkifNone = [i for i in checkifNone]
         if checkifNone[0][0] is None:
-            query = dbconnection.run_sql_command(fr"select id, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
-            item_list = []
-            single_item = {}
-            for item in query:
-                single_item = {
-                    "id":item[0],
-                    "tara":"na",
-                    "sessionid":item[1]
-                }
-                item_list.append(single_item)
-            return item_list
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+            for item in temp:
+                sessions.append(item[0])
+            result = {
+                "id": id_input,
+                "tara": "na",
+                "sessions": sessions
+            }
+            return jsonify(result)
+
         else:
-            #query the container
-            query = dbconnection.run_sql_command(fr"select id, truckTara, sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers = '{id_input}'")
+
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+        
+            for item in temp:
+                sessions.append(item[0])
+                print(item)
+            print(sessions)
+            temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+            tara = temp[0][0]
     #creating the json
-    query = [i for i in query]
-    if len(query) == 0:
-        return "no data"
-    item_list = []
-    single_item = {}
-    for item in query:
-        single_item = {
-            "id":item[0],
-            "tara":item[1],
-            "sessionid":item[2]
-        }
-        item_list.append(single_item)
-    return item_list
+    result = {
+        "id": id_input,
+        "tara": tara,
+        "sessions": sessions
+    }
+    return jsonify(result)
 
 
 #Return information about a Session Number, IN OUT of a truck, or a stand alone container
