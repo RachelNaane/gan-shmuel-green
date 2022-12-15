@@ -70,8 +70,8 @@ This information Goes to the billing team in order for them to keep in track wit
 def weightget():
 
     #Parsing Query Parameters From the url
-    date_start = request.args.get("from")
-    date_end = request.args.get("to")
+    date_start = request.args.get("t1")
+    date_end = request.args.get("t2")
     filt = request.args.get("filter")
 
     #Checking If Query Parameter for the date was given and if so format it to the Y-%m-%d %H:%M:%S Format (2001-04-11 14:0:0)
@@ -97,7 +97,7 @@ def weightget():
 
     
     #Basic qurey for DB to
-    basic_query = fr"SELECT id, direction, bruto, neto, produce, containers, truckTara FROM transactions"
+    basic_query = fr"SELECT id, direction, bruto, neto, produce, containers, truckTara, truck FROM transactions"
 
     #Adjust the query according to the filter
     if filt is None:
@@ -115,6 +115,7 @@ def weightget():
     
     #The sql query result in one big list with each result in a tuple so we need to fetch them out
     query = [i for i in query]
+    print(query)
 
     item_list = []
     single_item = {}
@@ -135,8 +136,9 @@ def weightget():
             neto = item[3]     
 
         #Creation of the diconarary
+        #Id is the ID of a truck
         single_item = {
-            "id":item[0],
+            "id":item[7],
             "direction":item[1],
             "bruto":item[2],
             "neto":neto,
