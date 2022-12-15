@@ -20,7 +20,7 @@ git clone https://github.com/RachelNaane/gan-shmuel-green.git || { echo "clone f
 wait
 
 # up env-testing
-cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
+cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; exit 1; }
 
 echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume" > .env
 docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
@@ -44,11 +44,11 @@ bash $root_billing/tests/test.sh || { echo "no test.sh file found for billing"; 
 exitcode_billing=$?
 
 # down env-testing
-cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
+cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; exit 1; }
 docker-compose down -v
 wait
 
-cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; exit 1; }
+cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)"; exit 1; }
 docker-compose down -v
 wait
 
