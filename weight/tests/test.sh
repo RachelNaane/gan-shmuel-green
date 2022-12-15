@@ -8,7 +8,7 @@ API_BASE_URL="http://localhost:8081"
 declare -a RESPONSES
 
 # Clear file
-> tests/score.txt
+> score.txt
 
 # Define an array of the endpoints to test
 ENDPOINTS=( "/health" "/weight" "/unknown" "/session/1" )
@@ -21,10 +21,10 @@ for endpoint in "${ENDPOINTS[@]}"; do
   # Check the status code of the response
   if [[ $response == *"200"* ]]; then
     # If the status code is 200, echo that the request was successful
-    echo "Request to $endpoint was successful." >> tests/score.txt
+    echo "Request to $endpoint was successful." >> score.txt
   else
     # Otherwise, echo that the request failed
-    echo "Request to $endpoint failed." >> tests/score.txt
+    echo "Request to $endpoint failed." >> score.txt
   fi
   
 done
