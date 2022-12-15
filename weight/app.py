@@ -123,7 +123,10 @@ def weightget():
     #id[[0]] direction[[1]] bruto[2] neto[[3]] produce[[4]] continers[5]
     for item in query:
         #getting list of containers
-        conteiners = item[5].split(',')
+        if item[5] is not None:
+            conteiners = item[5].split(',')
+        else:
+            containers=""
         ##Checking for containers with unkown tara
         neto = ""
         if item[6] is None:
