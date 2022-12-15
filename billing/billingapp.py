@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory, jsonify
+from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory
 import os.path
 import mysql.connector
 import pandas as pd
@@ -44,7 +44,7 @@ def truck():
 
 @app.route("/")
 def home():
-    return make_response("<h1>HELLO</h1>",200)
+    return make_response("<h1>WELCOME TO GAN SHMUEL'S JUICE PRODUCTION'S BILLING CLASS</h1>",200)
 
 
 @app.route("/health")
@@ -67,7 +67,7 @@ def get_rates():
         respone = make_response(send_from_directory(path="rates.xlsx",directory=uploads))
         respone.status_code = 200
         return respone 
-        
+
     else:
         file_name = request.json["filename"]
         if not os.path.isfile(f"in/{file_name}"):        
@@ -119,9 +119,10 @@ def register_provider():
     cursor.execute(f"INSERT INTO Provider (name) VALUES ('{provider_name}');")
     cursor.execute(f"select id from Provider where name = '{provider_name}';")
     new_id = cursor.fetchone()
-    return jsonify(
-        id=new_id
-    )
+    return {
+        "id": new_id
+    }
+    
 
 
 def db_connect():

@@ -21,6 +21,7 @@ services:
       - "${DB_PORT}:3306"
     volumes:
       - ${HOST_VOLUME}:${MYSQL_VOLUME}
+      #- "./db/data:/var/lib/mysql"
     healthcheck:
       test: ["CMD", "mysqladmin","ping","-h","localhost"]
       timeout: 20s
