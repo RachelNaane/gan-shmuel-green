@@ -22,8 +22,8 @@ wait
 # up env-testing
 cd $root_weight || { echo "'cd $(root_weight)' the current path is $(pwd)"; python3 mail.py ;exit 1;}
 
-echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume" > .env
-docker-compose build --no-cache || { echo "could not build the image for weight"; python3 mail.py ;exit 1;}
+echo -e "APP_PORT=8086\nDB_PORT=8087\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=production-net" > .env
+docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
 wait
 docker-compose up -d || { echo "could not run the dockers for weight "; python3 mail.py ;exit 1;}
 wait
@@ -31,8 +31,8 @@ wait
 
 cd $root_billing || { echo "'cd $(root_billing)' the current path is $(pwd)" |tee $full_score_path_weight $full_score_path_billing ; python3 mail.py ;exit 1;}
 
-echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume" > .env
-docker-compose build --no-cache || { echo "could not build the image for weight"; python3 mail.py ;exit 1;}
+echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=production-net"> .env
+docker-compose build --no-cache || { echo "could not build the image for weight"; exit 1; }
 wait 
 docker-compose up -d || { echo "could not run the dockers for weight "; python3 mail.py ;exit 1;}
 wait
