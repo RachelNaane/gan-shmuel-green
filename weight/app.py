@@ -1,8 +1,7 @@
 from flask import Flask, request, abort
 from datetime import datetime, date
-import datetime
 from db import dbconnection
-import json, re
+import json, re,csv,os
 
 
 
@@ -10,6 +9,7 @@ app = Flask(__name__)
 
 
 #This is the Post Mehthod Implemented by yossi
+
 @app.route("/weight", methods=["POST"])
 def weightpost():
     if request.method == "POST":
@@ -20,7 +20,9 @@ def weightpost():
         unit = request.form.get("unit")
         force = request.form.get("force")
         produce = request.form.get("produce")
+
         sid = dbconnection.run_sql_command(f'SELECT COUNT(*) AS row_count FROM transactions;')
+   
         data = {
         #more eff
         'sessionid':int(sid[0][0])+1,
@@ -30,34 +32,94 @@ def weightpost():
         'weight': int(weight), 
         'unit': unit if unit in ('kg', 'lbs') else 'None',
         'force': force.title(), 
-        'produce': produce if produce else "na",
+        'produce': produce if produce else "n/a",
         'time':int(datetime.now().strftime('%Y%m%d%H%M%S'))}
-        
-        if data["direction"] == "IN":
-            dbconnection.run_inset_query(fr'INSERT INTO transactions (datetime,direction,truck,containers,bruto,produce) VALUES ({data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
-            dbconnection.run_inset_query(fr'INSERT INTO transactions (datetime,direction,truck,containers,bruto,produce) VALUES ({data["time"]},"OUT","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
+
 
         allrows = dbconnection.run_sql_command('select * from transactions;')
-        [print(i) for i in allrows]
-        alltid = [i for i in allrows if i[3] == truck]
-        
-        if alltid[-1][2] == data["direction"]:
-            if data["force"] == "False":
-                print(f"Error: {allrows[-1][2]} followed by {data['direction']}")
-            else:
-                dbconnection.run_sql_command(f'UPDATE transactions SET bruto = {data["weight"]} WHERE id = {alltid[-1][0]};')
-                
-        tracktara = 5
-        neto = 5
-        if data["direction"] == "OUT":
-            dbconnection.run_inset_query(fr'INSERT INTO transactions (id,datetime,direction,truck,containers,bruto,truckTara,neto,produce) VALUES ({data["sessionid"]},{data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},{tracktara},{neto},"{data["produce"]}");')
+        alltid = [i for i in allrows if i[4] == truck]
 
+        if not alltid:
+            alltid = ["id", data["sessionid"], data["time"], data["direction"], data["truck"], data["containers"], 20, None, None, 'apples']
+
+
+
+
+        if data["direction"] == "None":
+
+
+            resdict = dbconnection.run_sql_command(fr"SELECT * FROM containers_registered WHERE container_id = '{data['containers']}';")
+
+
+            if resdict:
+                dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,containers,bruto,produce) VALUES ({data["sessionid"]},{data["time"]},"{data["direction"]}","{data["containers"]}",{int(resdict[0][1])},"{data["produce"]}");')
+                resdict = { "id":data["sessionid"], "containers": data["containers"],"bruto":resdict[0][1]}
+
+
+            else:
+                
+                dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,containers,bruto,produce) VALUES ({data["sessionid"]},{data["time"]},"{data["direction"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
+                resdict = { "id":data["sessionid"], "containers": data["containers"],"bruto":data["weight"]}
+
+            return resdict
+
+
+        elif data["direction"] == alltid[-1][3] and len(alltid) > 0:
+            if data["force"] == "False":
+                return f"Error: {allrows[-1][3]} followed by {data['direction']}"
+
+            elif data["force"] == "True":
+
+
+                dbconnection.run_sql_command(f'DELETE FROM transactions WHERE id = {alltid[-1][0]} ;')
+                
+                if alltid[-1][3] == "OUT":
+
+
+                    
+
+                    dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,truck,containers,truckTara,neto,produce) VALUES ({alltid[-1][1]},{data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},{neto},"{data["produce"]}");')
+                    [print(i) for i in dbconnection.run_sql_command('select * from transactions;')]
+
+                    resdict = { "id":alltid[-1][1], "truck":data["truck"],"bruto":data["weight"]}
+                    return resdict
+
+
+                else:
+                    dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,truck,containers,bruto,produce) VALUES ({alltid[-1][1]},{data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
+                    [print(i) for i in dbconnection.run_sql_command('select * from transactions;')]
+                    #resdict = { "id":data["sessionid"], "containers": data["containers"],"bruto":data["weight"]}
+                    #return resdict
+
+
+                #resdict = { "id":data["sessionid"], "truck": data["truck"],"neto":alltid[-1][6]-data["weight"]}
+                #return resdict
+
+
+        elif data["direction"] == "IN":
+            dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,truck,containers,bruto,produce) VALUES ({data["sessionid"]},{data["time"]},"{data["direction"]}","{data["truck"]}","{data["containers"]}",{data["weight"]},"{data["produce"]}");')
+
+        elif data["direction"] == "OUT":
+
+            
+            conts = alltid[-1][5]
+            conts = conts.split(",")
+
+            sumc = 0
+            for i in conts:
+                contweight = dbconnection.run_sql_command(fr"SELECT weight FROM containers_registered WHERE container_id = '{i}';")
+
+                sumc += int(contweight[0][0])
+
+            neto = alltid[-1][6]-data["weight"] -sumc
+            dbconnection.run_inset_query(fr'INSERT INTO transactions (sessionid,datetime,direction,truck,truckTara,neto,produce) VALUES ({alltid[-1][1]},{data["time"]},"{data["direction"]}","{data["truck"]}",{data["weight"]},{neto},"{data["produce"]}");')
+
+
+        #[print(i) for i in dbconnection.run_sql_command('select * from transactions;')]
         
-        # if data["direction"] == "OUT" and truckidlist[-1][6] == "None":
-        #     print('out followed by None')
-        # #print(dbconnection.run_sql_command('select * from transactions;'))
-        # print(truckidlist[-1])
-        return "allrows"
+
+
+        return "\nOK"
         
 
 #Get Weight return json of the last time according to a time zone
@@ -128,6 +190,49 @@ def weightget():
         item_list.append(single_item)
    
     return item_list
+
+@app.route("/batch", methods=["POST"])
+def batch():
+    if request.method == "POST":
+        filename = request.form.get("filename")
+        fext = os.path.splitext(filename)[1]
+        passw = request.form.get("pass")
+        if passw != 'pass123':
+            return "\nWrong Password\n"
+
+
+        with open(f'in/{filename}','r') as file:
+
+            if fext == '.csv':
+                reader = csv.reader(file)
+                valist = list(reader)
+                unit = valist[0][1]
+                valist.pop(0)
+        
+            elif fext == '.json':
+                data = json.load(file)
+                valist = []
+                for item in data:
+                    valist.append((item['id'], item['weight'], item['unit']))
+
+                unit = valist[0][2]
+
+
+        allcid = dbconnection.run_sql_command(f'SELECT container_id FROM containers_registered;')
+        allcid = [i[0] for i in allcid]
+        
+
+        for i in valist:
+            if i[0] in allcid:
+                dbconnection.run_inset_query(f"UPDATE containers_registered SET weight = {int(i[1])}, unit = '{unit}' WHERE container_id = '{i[0]}'")
+
+            else:
+                dbconnection.run_inset_query(f"INSERT INTO containers_registered (container_id,weight,unit) VALUES ('{i[0]}',{int(i[1])},'{unit}')")
+            
+
+        return 'OK'
+
+
 
 
 #Possible to add select 1 and by that return ok
