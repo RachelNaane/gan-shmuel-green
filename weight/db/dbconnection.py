@@ -1,27 +1,27 @@
 import mysql.connector
 # Creating the connection and the cursor to the mysql data base
 # DEV
-# def db_connect():
-#     global cnx
-#     global cursor
-#     cnx = mysql.connector.connect(
-#     user="root",
-#     host="localhost",
-#     port = 8082,
-#     password="password"
-
-#     )   
-
-# PROD
 def db_connect():
     global cnx
     global cursor
     cnx = mysql.connector.connect(
     user="root",
-    host="app-weaigt-db",
-    port = 3306,
+    host="localhost",
+    port = 8082,
     password="password"
-    )  
+
+    )   
+
+# PROD
+# def db_connect():
+#     global cnx
+#     global cursor
+#     cnx = mysql.connector.connect(
+#     user="root",
+#     host="app-weaigt-db",
+#     port = 3306,
+#     password="password"
+#     )  
 
     cursor = cnx.cursor()
     

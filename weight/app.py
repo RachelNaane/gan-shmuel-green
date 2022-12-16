@@ -192,7 +192,7 @@ def weightget():
             containers=""
         ##Checking for containers with unkown tara
         neto = ""
-        if item[6] is None:
+        if item[3] is None:
             neto = "N/A"
         else:
             neto = item[3]     
