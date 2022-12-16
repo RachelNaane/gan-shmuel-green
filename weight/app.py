@@ -386,7 +386,7 @@ def get_session(id):
     query = "select id, truck, bruto, truckTara, neto, direction, containers from transactions"
     alldata = dbconnection.run_sql_command(f"{query} where sessionid={id}")
     listdata = [i for i in alldata]
-    # print(listdata)
+    print(listdata)
     if len(listdata) == 0:
         return abort(404)
     if listdata[-1][5] == 'out':
@@ -394,7 +394,7 @@ def get_session(id):
     elif listdata[0][5] == 'in':
            dict_out = {"id":str(listdata[0][0]) , "truck":listdata[0][1] , "bruto":listdata[0][2]}
     else: 
-          dict_out = {"id":str(listdata[0][0]) ,"truck":"N/A" ,"container":listdata[0][6] , "neto":listdata[0][8]}
+          dict_out = {"id":str(listdata[0][0]) ,"truck":"N/A" ,"container":listdata[0][6] , "neto":listdata[0][4]}
          
     return jsonify(dict_out)
 
