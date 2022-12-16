@@ -1,6 +1,8 @@
+#!/bin/bash
+
 API_BASE_URL="3.9.66.97:8088"
 
-> score.txt
+touch score.txt
 
 ENDPOINTS=( "/health" "/rates")
 
