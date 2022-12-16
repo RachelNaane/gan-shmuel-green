@@ -158,6 +158,7 @@ def weightget():
         date_end = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
     
+
     #Basic qurey for DB to
     basic_query = fr"SELECT id, direction, bruto, neto, produce, containers, truckTara, truck FROM transactions"
 
@@ -168,16 +169,20 @@ def weightget():
         times = fr"AND datetime >= '{date_start}' AND datetime <= '{date_end}'"
         query = []
         filter_all = filt.split(',')
+        print(filter_all)
         if "IN" in filter_all:
             query += dbconnection.run_sql_command(f"{basic_query} where direction = 'IN' {times}")
         if "OUT" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'OUT' {times}")
+            temp = f"{basic_query} where direction = 'OUT' {times}"
+            query += dbconnection.run_sql_command(temp)
+            # query += dbconnection.run_sql_command(f"{basic_query} where direction = 'OUT' {times}")
+            # print(temp)
         if "NONE" in filter_all:
             query += dbconnection.run_sql_command(f"{basic_query} where direction = 'NONE' {times}")
+        
     
     #The sql query result in one big list with each result in a tuple so we need to fetch them out
     query = [i for i in query]
-    print(query)
 
     item_list = []
     single_item = {}
@@ -187,7 +192,7 @@ def weightget():
     for item in query:
         #getting list of containers
         if item[5] is not None:
-            conteiners = item[5].split(',')
+            containers = item[5].split(',')
         else:
             containers=""
         ##Checking for containers with unkown tara
@@ -205,7 +210,7 @@ def weightget():
             "bruto":item[2],
             "neto":neto,
             "produce":item[4],
-            "containers":conteiners
+            "containers":containers
         }
         item_list.append(single_item)
 
