@@ -9,8 +9,6 @@ declare -a RESPONSES
 
 # Clear file
 touch score.txt
-echo "this is a test" > score.txt
-echo " i am here $(pwd)" 
 
 # Define an array of the endpoints to test
 ENDPOINTS=( "/health" "/weight" "/unknown" "/session/1" )
