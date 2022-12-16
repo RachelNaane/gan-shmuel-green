@@ -57,20 +57,19 @@ describe transactions;
 
 -- DUMPING DATA TO THE DB
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22323', '2022-12-11', 'IN', 'T-12345', 'C-00123,C-00124', '1300',NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22323', '2022-12-11', 'IN', 'T-12345', 'C-00123,C-00124', 2000,NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto ,produce) VALUES ('22323', '2022-12-11', 'OUT', 'T-12345', NULL, 1500, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto ,produce) VALUES ('22323', '2022-12-11', 'OUT', 'T-12345', NULL, NULL, 500, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22324', '2022-12-12', 'IN', 'T-12346', 'C-00125,C-00126', 3000,NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22324', '2022-12-12', 'OUT', 'T-12346', NULL, 2000, 550, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22324', '2022-12-12', 'IN', 'T-12346', 'C-00125,C-00126', '1400',NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22325', '2022-12-08', 'IN', 'T-12347', 'C-00127,C-00128', 3500, NULL, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck,  bruto, truckTara, neto,produce) VALUES ('22325', '2022-12-08', 'OUT', 'T-12347', NULL, 1700, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22324', '2022-12-12', 'OUT', 'T-12346', NULL, NULL, 550, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22326', '2022-12-08', 'IN', 'T-12348', 'C-00123,C-00124', 4000, NULL, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto ,truckTara, neto, produce) VALUES ('22326', '2022-12-08', 'OUT', 'T-12348',1500 , 2000, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22325', '2022-12-08', 'IN', 'T-12347', 'C-00127,C-00128', '1350', NULL, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck,  bruto, truckTara, neto,produce) VALUES ('22325', '2022-12-08', 'OUT', 'T-12347', NULL, NULL, 500, 'Navel');
-
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22326', '2022-12-08', 'IN', 'T-12348', 'C-00123,C-00124', '1400', NULL, 'Navel');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto ,truckTara, neto, produce) VALUES ('22326', '2022-12-08', 'OUT', 'T-12348',1500 , NULL, 500, 'Navel');
 INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22323', '2022-12-11', 'NONE', NULL, 'C-0019', NULL,NULL, 'Navel');
 
 

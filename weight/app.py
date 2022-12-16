@@ -168,12 +168,12 @@ def weightget():
         times = fr"AND datetime >= '{date_start}' AND datetime <= '{date_end}'"
         query = []
         filter_all = filt.split(',')
-        if "in" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'in' {times}")
-        if "out" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'out' {times}")
-        if "none" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'none' {times}")
+        if "IN" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'IN' {times}")
+        if "OUT" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'OUT' {times}")
+        if "NONE" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'NONE' {times}")
     
     #The sql query result in one big list with each result in a tuple so we need to fetch them out
     query = [i for i in query]
@@ -274,10 +274,10 @@ def get_item(id):
 #Parsing Args
     id_input = id
     id_input = str(id_input)
-    from_arg = request.args.get("from")
-    to_arg = request.args.get("to")
+    date_start = request.args.get("from")
+    date_end = request.args.get("to")
 
-    #checking if id is exist
+    #Checking if the ID or container exists in the data base
     if id_input.startswith('T'):
         isTruck = True
         checkID = dbconnection.run_sql_command(fr"select sessionid from transactions where truck = '{id_input}'")
@@ -294,54 +294,48 @@ def get_item(id):
         return "you must enter an id of a truch or container"
     
 
-    #checking how many arguments I got and creating the dates for the query!
-    if from_arg is None and to_arg is None:
-        tmp1 = str(date.today())
-        date1 = tmp1+" 00:00:00"
-        tmp2 = str(datetime.now())
-        tmp2 = tmp2.split(".")
-        date2 = tmp2[0]
-    elif to_arg is None and from_arg is not None:
-        tmp1 = str(from_arg)
-        tmp1 = tmp1.zfill(14)
-        
-        date1 = datetime.strptime(tmp1, '%Y%m%d%H%M%S')
-        date1 = date1.strftime('%Y-%m-%d %H:%M:%S')
-        
-        tmp2 = str(datetime.now())
-        tmp2 = tmp2.split(".")
-        date2 = tmp2[0]
-    elif from_arg is None and to_arg is not None:
-        return "no such option"
-    else:
-        tmp1 = str(from_arg)
-        tmp1 = tmp1.zfill(14)
-        date1 = datetime.strptime(tmp1, '%Y%m%d%H%M%S')
-        date1 = date1.strftime('%Y-%m-%d %H:%M:%S')
+    if date_start is not None:
+        timestamp = pad_with_zeros(date_start)
+        date_start = datetime.strptime(timestamp, '%Y%m%d%H%M%S')
+        date_start = date_start.strftime('%Y-%m-%d %H:%M:%S')
 
-        tmp2 = str(to_arg)
-        tmp2 = tmp2.zfill(14)
-        date2 = datetime.strptime(tmp2, '%Y%m%d%H%M%S')
-        date2 = date2.strftime('%Y-%m-%d %H:%M:%S')
+    if date_end is not None:
+        timestamp_end = pad_with_zeros(date_end)
+        date_end = datetime.strptime(timestamp_end, '%Y%m%d%H%M%S')
+        date_end = date_end.strftime('%Y-%m-%d %H:%M:%S')
+
+    if date_start is None:
+        #Give value of 0000 and the date of today
+        tmp1 = str(date.today())
+        date_start = tmp1+" 00:00:00"
+
+    if date_end is None:
+        #Value of Now
+        current_time = datetime.now()
+        date_end = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+
+
     
 
     #check if i got an container id or an truck id
     sessions = []
     if isTruck:
-        #doing the query
-        temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and truck = '{id_input}'")
-        
+        #QERY fot the sessions ID
+        query = fr"select distinct sessionid from transactions where datetime >= '{date_start}' and datetime <= '{date_end}' and truck = '{id_input}'"
+        temp = dbconnection.run_sql_command(fr"{query}")
+
         for item in temp:
             sessions.append(item[0])
 
-        temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+        temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'OUT'")
         tara = temp[0][0]
     else:
         checkifNone = dbconnection.run_sql_command(fr"select truck from transactions where containers like '%{id_input}%'")
         #checking if the container has history or not
         # checkifNone = [i for i in checkifNone]
         if checkifNone[0][0] is None:
-            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date_start}' and datetime <= '{date_end}' and containers like '%{id_input}%'")
             for item in temp:
                 sessions.append(item[0])
             result = {
@@ -353,13 +347,13 @@ def get_item(id):
 
         else:
 
-            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date1}' and datetime <= '{date2}' and containers like '%{id_input}%'")
+            temp = dbconnection.run_sql_command(fr"select distinct sessionid from transactions where datetime >= '{date_start}' and datetime <= '{date_end}' and containers like '%{id_input}%'")
         
             for item in temp:
                 sessions.append(item[0])
                 print(item)
             print(sessions)
-            temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'out'")
+            temp = dbconnection.run_sql_command(fr"select truckTara from transactions where sessionid = '{sessions[-1]}' and direction = 'OUT'")
             tara = temp[0][0]
     #creating the json
     result = {
