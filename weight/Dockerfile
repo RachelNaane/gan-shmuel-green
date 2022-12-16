@@ -1,5 +1,7 @@
 FROM python:3.8-slim
 
+
+COPY in /in
 # Set the working directory to /app
 WORKDIR /app
 
