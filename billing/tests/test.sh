@@ -1,4 +1,4 @@
-API_BASE_URL="http://localhost:8083"
+API_BASE_URL=" http://3.9.66.97:8088"
 
 > score.txt
 
