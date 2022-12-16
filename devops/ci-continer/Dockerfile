@@ -6,5 +6,5 @@ WORKDIR /app
 COPY . .
 RUN pip install -r req.txt
 RUN  apk add bash && apk add git && apk add curl 
-
+RUN git clone https://github.com/RachelNaane/gan-shmuel-green.git
 ENTRYPOINT ["python3", "ci.py"]
