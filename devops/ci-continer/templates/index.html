@@ -1,15 +1,37 @@
- <html>
+<html>
 <head>
   <title>Welcome to the Gan-Shmuel Project</title>
   <style>
     body {
       background-color: lightgreen;
+      font-family: 'Arial', sans-serif;
+    }
+    .button-container {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+    }
+    .text-center {
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to the Gan-Shmuel Project</h1>
-  <p>If you see this page that means all health checks pass and prod is available.</p>
-  <p>(go green team!!!!!!!!).</p>
+  <h1 class="text-center">Welcome to the Gan-Shmuel Project</h1>
+  <p class="text-center">If you see this page that means all health checks pass and prod is available.</p>
+  <div class="button-container">
+    <button><a href="3.9.66.97:8085/health">ci health check</a></button>
+    <button><a href="3.9.66.97:8081/health">weight health check</a></button>
+    <button><a href="3.9.66.97:8083/health">billing health check</a></button>
+  </div>
+  <div style="text-align:center">
+    <img src="gan-shmuel-photo.png" alt="random picture">
+  </div>
+  <div>
+  <div style="text-align:center">
+    <p>Team Name: DevOps - Rachel Nana, Dvir Pashut, Yotam Ben-Tzvi</p>
+    <p>Team Name: Weight - Elior Estrin, Noam Shamir, Yossi (No Last Name), Eyal Barnes.</p>
+    <p>Team Name: Billing - Roei Keisar, Noam Jorno, Or Gabay.</p>
+  </div>
 </body>
 </html>
