@@ -8,7 +8,9 @@ API_BASE_URL="http://localhost:8081"
 declare -a RESPONSES
 
 # Clear file
-> score.txt
+touch score.txt
+echo "this is a test" > score.txt
+echo " i am here $(pwd)" 
 
 # Define an array of the endpoints to test
 ENDPOINTS=( "/health" "/weight" "/unknown" "/session/1" )

@@ -40,16 +40,21 @@ def home_page():
 def health_check():
     return "OK"
 
-@app.get("/send_mail")
-def send_mail():
+@app.get("/send_mail/<content>")
+def send_mail(content):
     #send
     os.system("pwd")
     email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
     msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
-    with app.open_resource("/app/test/gan-shmuel-green/billing/tests/score.txt") as fp:
-        msg.attach("/app/test/gan-shmuel-green/billing/tests/score.txt", "text/plain", fp.read())
-    with app.open_resource("/app/test/gan-shmuel-green/weight/tests/score.txt") as fp:
-        msg.attach("/app/test/gan-shmuel-green/weight/tests/score.txt", "text/plain", fp.read())
+
+    if content=="score":
+        with app.open_resource("/app/test/gan-shmuel-green/billing/tests/score.txt") as fp:
+            msg.attach("/app/test/gan-shmuel-green/billing/tests/score.txt", "text/plain", fp.read())
+        with app.open_resource("/app/test/gan-shmuel-green/weight/tests/score.txt") as fp:
+            msg.attach("/app/test/gan-shmuel-green/weight/tests/score.txt", "text/plain", fp.read())
+    else:
+         with app.open_resource("/app/report.txt") as fp:
+            msg.attach("/app/report.txt", "text/plain", fp.read())
     mail.send(msg) 
     return "OK"
 
