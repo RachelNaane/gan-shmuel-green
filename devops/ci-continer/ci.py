@@ -24,8 +24,8 @@ def staff_are_pushed():
     to_check = str(re.search("refs/heads/main", str(content))) #find the branch of the push
     if to_check != "None": # if barnch = main send emails and run tests
         print("merge to main!!!!!.... \n starting testings")  
-        #os.system("bash phase1.sh > all_test_logs.txt")
-        #send_mail(content)                                         #########   figure out the place for us to send
+        os.system("bash phase1.sh > all_test_logs.txt")
+        #########   figure out the place for us to send
     return "push recived ... mails will be sent when merged with main"
     
 
@@ -40,16 +40,21 @@ def home_page():
 def health_check():
     return "OK"
 
-@app.get("/send_mail")
-def send_mail():
+@app.get("/send_mail/<content>")
+def send_mail(content):
     #send
     os.system("pwd")
     email_to = ['ratash3@gmail.com', 'pashutdvir@gmail.com', 'yota.benz@outlook.com', 'Elior1001@gmail.com', 'roei.keisar@gmail.com']
     msg = Message("CI RESULT", sender=app.config.get("MAIL_USERNAME"), recipients=email_to)
-    with app.open_resource("/app/test/gan-shmuel-green/billing/tests/score.txt") as fp:
-        msg.attach("/app/test/gan-shmuel-green/billing/tests/score.txt", "text/plain", fp.read())
-    with app.open_resource("/app/test/gan-shmuel-green/weight/tests/score.txt") as fp:
-        msg.attach("/app/test/gan-shmuel-green/weight/tests/score.txt", "text/plain", fp.read())
+
+    if content=="score":
+        with app.open_resource("/app/test/gan-shmuel-green/billing/tests/score.txt") as fp:
+            msg.attach("/app/test/gan-shmuel-green/billing/tests/score.txt", "text/plain", fp.read())
+        with app.open_resource("/app/test/gan-shmuel-green/weight/tests/score.txt") as fp:
+            msg.attach("/app/test/gan-shmuel-green/weight/tests/score.txt", "text/plain", fp.read())
+    else:
+         with app.open_resource("/app/report.txt") as fp:
+            msg.attach("/app/report.txt", "text/plain", fp.read())
     mail.send(msg) 
     return "OK"
 
