@@ -320,7 +320,16 @@ def get_item(id):
         date_end = current_time.strftime("%Y-%m-%d %H:%M:%S")
 
 
-
+    #checking if the query is empty with dates
+    if isTruck:
+        isEmpty = dbconnection.run_sql_command(fr"select sessionid from transactions where datetime >= '{date_start}' and datetime <= '{date_end}' and truck = '{id_input}'")
+        print(isEmpty)
+        if len(isEmpty) == 0:
+            return abort(404)
+    else:
+        isEmpty = dbconnection.run_sql_command(fr"select sessionid from transactions where datetime >= '{date_start}' and datetime <= '{date_end}' and containers like '%{id_input}%'")
+        if len(isEmpty) == 0:
+            return abort(404)
     
     print(f"!!!!{date_start}-------{date_end}")
     #check if i got an container id or an truck id
