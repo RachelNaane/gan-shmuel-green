@@ -207,7 +207,7 @@ def weightget():
         single_item = {
             "id":item[7],
             "direction":item[1],
-            "bruto":item[2],
+            "bruto":f"{item[2]}",
             "neto":neto,
             "produce":item[4],
             "containers":containers
