@@ -38,9 +38,11 @@ docker-compose -p test up -d || { echo "could not run the dockers for weight">/a
 wait
 
 # run test
-bash $root_weight/tests/test.sh
+cd $root_weight/tests
+bash test.sh
 exitcode_weight=$?
-bash $root_billing/tests/test.sh
+cd $root_billing/tests
+bash test.sh
 exitcode_billing=$?
 
 # down env-testing
