@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS `Trucks` (
 ) ENGINE=MyISAM ;
 --
 -- Dumping data
+
+
 --
 
 /*
