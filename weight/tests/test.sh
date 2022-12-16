@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the base URL of your Flask API
-API_BASE_URL=" http://3.9.66.97:8086"
+API_BASE_URL="3.9.66.97:8086"
 
 
 # Declare an empty array to store the responses from the requests
