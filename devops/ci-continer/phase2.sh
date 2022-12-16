@@ -25,3 +25,4 @@ docker-compose -p prod down
 echo -e "APP_PORT=8081\nDB_PORT=8082\nHOST_VOLUME=$weight_host_volume\nMYSQL_VOLUME=$weight_mysql_volume\nNETWORK=production-net" > .env
 docker-compose -p prod up -d || { echo "could not run weight prod containers!!!!"; exit 1; }
 wait
+

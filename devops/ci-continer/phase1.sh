@@ -72,6 +72,7 @@ fi
 echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_weight || { echo "problem with adding ci result to score.txt">>/app/report.txt; curl localhost:5000/send_mail/report; exit 1;}
 echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem with adding ci result to score.txt">>/app/report.txt; curl localhost:5000/send_mail/report; exit 1;}
 
+
 curl localhost:5000/send_mail/score
 
 # delete test dir
