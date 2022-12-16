@@ -75,4 +75,4 @@ echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full
 echo -e "\n\n$message \n$billing_result \n$weight_result \n$conclusion" >> $full_score_path_billing || { echo "problem"; curl localhost:5000/send_mail; exit 1;}
 
 curl localhost:5000/send_mail
-rm -fr test
+rm -r test
