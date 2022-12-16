@@ -279,8 +279,8 @@ def get_item(id):
 #Parsing Args
     id_input = id
     id_input = str(id_input)
-    date_start = request.args.get("from")
-    date_end = request.args.get("to")
+    date_start = request.args.get("t1")
+    date_end = request.args.get("t2")
 
     #Checking if the ID or container exists in the data base
     if id_input.startswith('T'):
@@ -322,7 +322,7 @@ def get_item(id):
 
 
     
-
+    print(f"!!!!{date_start}-------{date_end}")
     #check if i got an container id or an truck id
     sessions = []
     if isTruck:
