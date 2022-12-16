@@ -1,7 +1,9 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, send_from_directory
+import requests
 import os.path
 import mysql.connector
 import pandas as pd
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -123,7 +125,93 @@ def register_provider():
         "id": new_id
     }
     
+@app.route("/bill/<id>",methods=["GET"])
+def bill(id):
+    today=datetime.now()
+    default_now=today.strftime("%Y%m%d%H%M%S")
+    default_day= default_now[:6]+"01000000"
 
+    q = request.args.to_dict()
+
+    to = q.get("to",default_now)
+    start = q.get("from",default_day)
+
+    db_connect()
+    cursor.execute("USE billdb;") 
+    cursor.execute(f"SELECT name from Provider where id = {id};")
+    provider_name = cursor.fetchone()
+    if not provider_name:
+        return make_response("<h1>Unregistered Provider</h1>",400)
+    provider_name = provider_name[0]
+
+    
+    cursor.execute(f"SELECT id from Trucks where provider_id = {id};")
+    truck_list = cursor.fetchall()
+    if not truck_list:
+        return make_response("<h1>The current provider doesn't have trucks assigned to him</h1>",500)
+    
+    total_trucks = []
+    current_providers_trucks = []
+    for truck in truck_list:
+        current_providers_trucks.append(truck[0])
+    
+    curr_host = "18.170.52.15"
+    weight_json_array = requests.get(f"http://{curr_host}:8081/weight?t1={start}&t2={to}&filter=OUT")
+    weight_json_array = weight_json_array.json()
+
+    rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
+            "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
+
+    print(weight_json_array)
+    
+    for weight in weight_json_array:
+        if weight["id"] not in(current_providers_trucks):
+            continue
+        else:
+            if weight["id"] not in total_trucks:
+                total_trucks.append(weight["id"])
+
+        cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
+        current_rate = cursor.fetchone()
+        if not current_rate:
+            cursor.execute(f"SELECT rate from Rates where scope = 'ALL' and product_id = '{weight['produce']}';")
+            current_rate = cursor.fetchone()
+            current_rate = current_rate[0]
+        else:
+            current_rate = current_rate[0]
+
+        current_sessions_num = 0
+        #for container in weight["containers"]:
+            #GET /truck/<id>?from=t1&to=t2
+        # lines (untill next hashtag) will be inside the for loop v
+        temp_container = { "id": "C-00123",
+          "tara": 50,
+          "sessions": ["id1","id2","id3"] 
+        }
+        current_sessions_num += len(temp_container["sessions"])
+        #
+
+        rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
+
+    total_sessions_count = 0
+    total_pay = 0
+
+    for item in rev["products"]:
+        total_sessions_count += item["count"]
+        total_pay += item["pay"]
+
+    rev["truckcount"]=len(total_trucks)
+    rev["total"] = total_pay
+    rev["sessioncount"] = total_sessions_count
+    return rev
+
+
+def convert_int_to_correct_date_format(somenum):
+    rev = str(somenum)
+    while len(rev) < 14:
+        rev+='0'
+    rev = f"{rev[:4]}-{rev[4:6]}-{rev[6:8]} {rev[8:10]}:{rev[10:12]}:{rev[10:12]}"
+    return rev
 
 def db_connect():
     global cnx

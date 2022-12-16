@@ -32,7 +32,27 @@ CREATE TABLE IF NOT EXISTS `Trucks` (
 ) ENGINE=MyISAM ;
 --
 -- Dumping data
+insert into Provider values ("10001","Roei");
+insert into Provider values ("10002","Noam");
+insert into Provider values ("10003","Or");
+insert into Provider values ("10004","Dvir");
+insert into Provider values ("10005","Yotam");
+insert into Provider values ("10006","Rachel");
+insert into Provider values ("10007","Elior");
+insert into Provider values ("10008","Shoval");
+insert into Provider values ("10009","Eduard");
+insert into Provider values ("10010","Golan");
 
+insert into Trucks values ("T-11111",10001);
+insert into Trucks values ("T-22222",10002);     
+insert into Trucks values ("T-33333",10003);     
+insert into Trucks values ("T-44444",10004);    
+insert into Trucks values ("T-55555",10005); 
+insert into Trucks values ("T-66666",10006);   
+insert into Trucks values ("T-77777",10007);
+insert into Trucks values ("T-88888",10008);
+insert into Trucks values ("T-99999",10009);   
+insert into Trucks values ("T-11010",10001);                              
 
 --
 
