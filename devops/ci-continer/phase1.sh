@@ -31,12 +31,17 @@ wait
 
 cd $root_billing || { echo "could not cd into $root_billing">/app/report.txt; curl localhost:5000/send_mail/report; exit 1;}
 
-echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=test-net"> .env
+echo -e "APP_PORT=8088\nDB_PORT=8089\nHOST_VOLUME=$billing_host_volume\nMYSQL_VOLUME=$billing_mysql_volume\nNETWORK=test-net" > .env
 docker-compose build --no-cache || { echo "could not build the image for weight">/app/report.txt; curl localhost:5000/send_mail/report; exit 1; }
 wait 
 docker-compose -p test up -d || { echo "could not run the dockers for weight">/app/report.txt; curl localhost:5000/send_mail/report; exit 1;}
 wait
 
+
+echo "waiting for last finishes"
+sleep 15 
+
+echo "start testing!!!!!!!"
 # run test
 cd $root_weight/tests
 bash test.sh
