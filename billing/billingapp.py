@@ -179,10 +179,7 @@ def bill(id):
     curr_host = "3.9.66.97"
     weight_json_array = requests.get(f"http://{curr_host}:8086/weight?t1={start}&t2={to}")
     weight_json_array = weight_json_array.json()
-    if weight.status_code == 400:
-        return "Bill From That Date Range Wasn't Not Found", 404
-    elif weight.status_code == 500:
-        return "Error: API request unsuccessful", 500
+    
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
             "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
