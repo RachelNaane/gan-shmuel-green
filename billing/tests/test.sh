@@ -1,4 +1,4 @@
-API_BASE_URL="http://localhost:8083"
+API_BASE_URL="http://localhost:8088"
 
 > score.txt
 
@@ -72,7 +72,7 @@ else
   echo "PUT Request to /truck failed." >> score.txt
 fi
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "localhost:8083/truck/T-11111")
+response=$(curl -s -o /dev/null -w "%{http_code}" $API_BASE_URL/truck/T-11111)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -83,7 +83,7 @@ fi
 
 # /bill API
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "localhost:8083/bill/10001")
+response=$(curl -s -o /dev/null -w "%{http_code}" $API_BASE_URL/bill/10001)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
