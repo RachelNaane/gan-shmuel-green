@@ -3,6 +3,7 @@ import requests
 import os.path
 import mysql.connector
 import pandas as pd
+import jsonify
 from datetime import datetime
 
 
@@ -43,6 +44,27 @@ def truck():
         return make_response("<h1>Failure</h1>",500)
     return make_response("<h1>Registerd</h1>",200)
 
+@app.route('/truck/<id>', methods=['GET'])
+def get_truck_data(id):
+    curr_host = "18.133.232.66"
+
+    def_year = datetime.now().year
+    def_month = datetime.now().month
+    default_start = f"{def_year}{def_month}01000000"
+    now = datetime.now()
+    date_time = now.strftime("%Y%m%d")
+    t1 = request.args.get('from', default= default_start)
+    t2 = request.args.get('to', default= datetime)
+
+    response = requests.get(f"http://{curr_host}:8081/item/{id}?t1={t1}")
+    if response.status_code == 200:
+        data = response.json()
+        return data  
+        
+    elif response.status_code == 400:
+        return 'Truck not found', 404
+    else:
+        return("Error: API request unsuccessful"), 500
 
 @app.route("/")
 def home():
@@ -131,21 +153,20 @@ def bill(id):
     default_now=today.strftime("%Y%m%d%H%M%S")
     default_day= default_now[:6]+"01000000"
 
-    q = request.args.to_dict()
-
-    to = q.get("to",default_now)
-    start = q.get("from",default_day)
+    
+    to = request.args.get("to", default= default_now)
+    start = request.args.get("from",default= default_day)
 
     db_connect()
     cursor.execute("USE billdb;") 
-    cursor.execute(f"SELECT name from Provider where id = {id};")
+    cursor.execute(f"SELECT name from Provider WHERE id = {id};")
     provider_name = cursor.fetchone()
     if not provider_name:
         return make_response("<h1>Unregistered Provider</h1>",400)
     provider_name = provider_name[0]
 
     
-    cursor.execute(f"SELECT id from Trucks where provider_id = {id};")
+    cursor.execute(f"SELECT id from Trucks WHERE provider_id = {id};")
     truck_list = cursor.fetchall()
     if not truck_list:
         return make_response("<h1>The current provider doesn't have trucks assigned to him</h1>",500)
@@ -155,14 +176,13 @@ def bill(id):
     for truck in truck_list:
         current_providers_trucks.append(truck[0])
     
-    curr_host = "18.170.52.15"
-    weight_json_array = requests.get(f"http://{curr_host}:8081/weight?t1={start}&t2={to}&filter=OUT")
+    curr_host = "18.133.232.66"
+    weight_json_array = requests.get(f"http://{curr_host}:8081/weight?t1={start}&t2={to}")
     weight_json_array = weight_json_array.json()
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
             "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
 
-    print(weight_json_array)
     
     for weight in weight_json_array:
         if weight["id"] not in(current_providers_trucks):
@@ -170,28 +190,26 @@ def bill(id):
         else:
             if weight["id"] not in total_trucks:
                 total_trucks.append(weight["id"])
-
-        cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
-        current_rate = cursor.fetchone()
-        if not current_rate:
-            cursor.execute(f"SELECT rate from Rates where scope = 'ALL' and product_id = '{weight['produce']}';")
+        
+        if weight["direction"]=="OUT":
+            cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
             current_rate = cursor.fetchone()
-            current_rate = current_rate[0]
-        else:
-            current_rate = current_rate[0]
+            if not current_rate:
+                cursor.execute(f"SELECT rate from Rates where scope = 'ALL' and product_id = '{weight['produce']}';")
+                current_rate = cursor.fetchone()
+                current_rate = current_rate[0]
+            else:
+                current_rate = current_rate[0]
 
-        current_sessions_num = 0
-        #for container in weight["containers"]:
-            #GET /truck/<id>?from=t1&to=t2
-        # lines (untill next hashtag) will be inside the for loop v
-        temp_container = { "id": "C-00123",
-          "tara": 50,
-          "sessions": ["id1","id2","id3"] 
-        }
-        current_sessions_num += len(temp_container["sessions"])
-        #
+            current_sessions_num = 0
+            for container in weight["containers"]:
 
-        rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
+                temp = requests.get(f"http://{curr_host}:8081/item/{container}?t1={start}")
+                temp_container = temp.json()
+                current_sessions_num += len(temp_container["sessions"])
+
+
+            rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
 
     total_sessions_count = 0
     total_pay = 0

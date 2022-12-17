@@ -1,2 +1,9 @@
-Request to /health was successful.
-Request to /rates failed.
+GET Request to /rates was successful.
+POST Request to /rates was successful.
+GET Request to /health was successful.
+POST Request to /provider was successful.
+PUT Request to /provider was successful.
+POST Request to /truck was successful.
+PUT Request to /truck was successful.
+GET Request to /truck was successful.
+GET Request to /bill was successful.

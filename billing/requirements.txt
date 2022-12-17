@@ -13,3 +13,4 @@ pandas==1.5.2
 openpyxl==3.0.10
 daytime==0.4
 requests==2.25.1
+jsonify==0.5
