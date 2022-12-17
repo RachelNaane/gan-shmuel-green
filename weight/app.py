@@ -182,12 +182,12 @@ def weightget():
         times = fr"AND datetime >= '{date_start}' AND datetime <= '{date_end}'"
         query = []
         filter_all = filt.split(',')
-        if "in" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'in' {times}")
-        if "out" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'out' {times}")
-        if "none" in filter_all:
-            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'none' {times}")
+        if "IN" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'IN' {times}")
+        if "OUT" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'OUT' {times}")
+        if "NONE" in filter_all:
+            query += dbconnection.run_sql_command(f"{basic_query} where direction = 'NONE' {times}")
     
     #The sql query result in one big list with each result in a tuple so we need to fetch them out
     query = [i for i in query]
@@ -203,7 +203,7 @@ def weightget():
         if item[5] is not None:
             conteiners = item[5].split(',')
         else:
-            containers=""
+            conteiners=""
         ##Checking for containers with unkown tara
         neto = ""
         if item[6] is None:
