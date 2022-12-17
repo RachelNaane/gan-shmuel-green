@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Set the base URL of your Flask API
-API_BASE_URL="http://localhost:8081"
+API_BASE_URL="3.9.66.97:8086"
 
 
 # Declare an empty array to store the responses from the requests
 declare -a RESPONSES
 
 # Clear file
-> score.txt
+touch score.txt
 
 # Define an array of the endpoints to test
 ENDPOINTS=( "/health" "/weight?t1=200104041" "/unknown" "/session/22324" )

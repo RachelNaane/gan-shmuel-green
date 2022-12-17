@@ -1,6 +1,8 @@
-API_BASE_URL="http://localhost:8083"
+#!/bin/bash
 
-> score.txt
+API_BASE_URL="3.9.66.97:8088"
+
+touch score.txt
 
 ENDPOINTS=( "/health" "/rates")
 
