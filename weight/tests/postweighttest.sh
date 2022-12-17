@@ -1,7 +1,7 @@
 
 functest=0
 # HOST="localhost:5000"
-HOST='localhost:8081'
+HOST='3.9.66.97:8086'
 
 #truck in 
 result=$(curl -X POST -d 'direction=in&truck=T-SystemTest&containers='C-65816'&weight=1500&unit=kg&force=true&produce=apples' "http://$HOST/weight")
