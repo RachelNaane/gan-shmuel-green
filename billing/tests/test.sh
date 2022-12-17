@@ -1,10 +1,10 @@
 #!/bin/bash
 
 API_BASE_URL="3.9.66.97:8088"
-
+#API_BASE_URL="localhost:8083"
 touch score.txt
 
-# /rates APIS
+# /rates API
 
 response=$(curl -o /dev/null -w "%{http_code}" -X GET -H "Content-Type: application/json" -d '{"filename":"rates.xlsx"}' $API_BASE_URL/rates)
 RESPONSES+=("$response") 
@@ -36,7 +36,7 @@ fi
 
 # /provider API
 
-response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"name":"Best Provider"}' $API_BASE_URL/provider)
+response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"name":"Prigat"}' $API_BASE_URL/provider)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -56,7 +56,7 @@ fi
 
 # /truck API
 
-response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"id":"T-32126", "provider":10001}' $API_BASE_URL/truck)
+response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"id":"T-32129", "provider":10001}' $API_BASE_URL/truck)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -74,7 +74,7 @@ else
   echo "PUT Request to /truck failed." >> score.txt
 fi
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/truck/T-11111")
+response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/truck/T-12345")
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -85,7 +85,7 @@ fi
 
 # /bill API
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10001?from=20050404")
+response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10006?from=20050404")
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -94,11 +94,11 @@ else
   echo "GET Request to /bill failed." >> score.txt
 fi
 
-if [[ ${RESPONSES[@]} =~ "200" ]]; then
-  echo "Wokred" 
-  exit 0
-
-else
-  
-  exit 1
-fi
+for item in "${RESPONSES[@]}"; do
+  if [[ $item == 200 ]]; then
+    continue
+  else
+    echo "Test Failed"
+    exit 1
+  fi
+done
