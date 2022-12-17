@@ -9,8 +9,8 @@ root_weight="/app/test/gan-shmuel-green/weight"
 full_score_path_weight="/app/test/gan-shmuel-green/weight/tests/score.txt"
 full_score_path_billing="/app/test/gan-shmuel-green/billing/tests/score.txt"
 
-billing_host_volume="/var/lib/docker/volumes/billing-test-volume/_data/sample_data"
-weight_host_volume="/var/lib/docker/volumes/weight-test-volume/_data/sample_data"
+billing_host_volume="./db/sample_data"
+weight_host_volume="./db/sample_data"
 billing_mysql_volume="/docker-entrypoint-initdb.d"
 weight_mysql_volume="/docker-entrypoint-initdb.d"
 
