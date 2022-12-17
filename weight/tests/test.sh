@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the base URL of your Flask API
-API_BASE_URL="http://localhost:8081"
+API_BASE_URL="http://localhost:5000"
 
 
 # Declare an empty array to store the responses from the requests
@@ -33,7 +33,6 @@ bash postweighttest.sh
 if [ $? -eq 0 ]; then
   echo "post/weight ran successfully"
 else
-
   echo "post/weight failed"
   exit 1
 fi
