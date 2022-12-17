@@ -3,8 +3,8 @@
 root_billing="/app/gan-shmuel-green/billing"
 root_weight="/app/gan-shmuel-green/weight"
 
-billing_host_volume="/var/lib/docker/volumes/prod_bill_prod_vol/_data"
-weight_host_volume="/var/lib/docker/volumes/prod_prod_vol/_data"
+billing_host_volume="/var/lib/docker/volumes/prod_prod_vol/_data"
+weight_host_volume="/var/lib/docker/volumes/prod_bill_prod_vol/_data"
 billing_mysql_volume="/var/lib/mysql"
 weight_mysql_volume="/var/lib/mysql"
 
