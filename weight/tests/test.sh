@@ -29,6 +29,14 @@ for endpoint in "${ENDPOINTS[@]}"; do
   
 done
 
+bash postweighttest.sh
+if [ $? -eq 0 ]; then
+  echo "post/weight ran successfully"
+else
+
+  echo "post/weight failed"
+  exit 1
+fi
 
 # Check if all items in the array equal 200
 for item in "${RESPONSES[@]}"; do
