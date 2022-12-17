@@ -81,6 +81,8 @@ else
   echo "GET Request to /truck failed." >> score.txt
 fi
 
+# /bill API
+
 response=$(curl -s -o /dev/null -w "%{http_code}" "localhost:8083/bill/10001")
 RESPONSES+=("$response")
 
