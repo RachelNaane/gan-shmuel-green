@@ -402,9 +402,9 @@ def get_session(id):
     print(listdata)
     if len(listdata) == 0:
         return abort(404)
-    if listdata[-1][5] == 'out':
+    if listdata[-1][5] == 'OUT':
           dict_out = {"id":str(listdata[0][0]) , "truck":listdata[0][1] , "bruto":listdata[0][2],"tara":listdata[-1][3],"neto":listdata[-1][4]}
-    elif listdata[0][5] == 'in':
+    elif listdata[0][5] == 'IN':
            dict_out = {"id":str(listdata[0][0]) , "truck":listdata[0][1] , "bruto":listdata[0][2]}
     else: 
           dict_out = {"id":str(listdata[0][0]) ,"truck":"N/A" ,"container":listdata[0][6] , "neto":listdata[0][4]}
