@@ -56,27 +56,24 @@ describe transactions;
 
 
 -- DUMPING DATA TO THE DB
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('1', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('1', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('22323', '2022-12-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22323', '2022-12-11', 'IN', 'T-12345', 'C-00123,C-00124', 2000,NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto ,produce) VALUES ('22323', '2022-12-11', 'OUT', 'T-12345', NULL, 1500, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('32323', '2021-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('32323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22324', '2022-12-12', 'IN', 'T-12346', 'C-00125,C-00126', 3000,NULL , 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('22324', '2022-12-12', 'OUT', 'T-12346', NULL, 2000, 550, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('42323', '2018-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('52323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22325', '2022-12-08', 'IN', 'T-12347', 'C-00127,C-00128', 3500, NULL, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck,  bruto, truckTara, neto,produce) VALUES ('22325', '2022-12-08', 'OUT', 'T-12347', NULL, 1700, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('62323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('62323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22326', '2022-12-08', 'IN', 'T-12348', 'C-00123,C-00124', 4000, NULL, 'Navel');
+INSERT INTO transactions (sessionid, datetime, direction, truck, bruto ,truckTara, neto, produce) VALUES ('22326', '2022-12-08', 'OUT', 'T-12348',1500 , 2000, 500, 'Navel');
 
-INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, neto, produce) VALUES ('72323', '2022-11-11', 'in', '123412315', '5423', '432', '300', '433', '431');
-INSERT INTO transactions (sessionid, datetime, direction, truck, bruto, truckTara, neto, produce) VALUES ('72323', '2022-11-11', 'out', '5423', '432', '300', '433', '431');
+
+INSERT INTO transactions (sessionid, datetime, direction, truck, containers, bruto, truckTara, produce) VALUES ('22323', '2022-12-11', 'NONE', NULL, 'C-0019', NULL,NULL, 'Navel');
+
 
 -- Direction none
-INSERT INTO transactions (sessionid, datetime, containers, bruto, produce) VALUES ('82323', '2022-11-11', '5423', '432', '431');
-
 
 
 -- Containers

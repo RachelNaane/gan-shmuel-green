@@ -1,6 +1,6 @@
 import mysql.connector
-#Creating the connection and the cursor to the mysql data base
-#DEV
+# Creating the connection and the cursor to the mysql data base
+# DEV
 # def db_connect():
 #     global cnx
 #     global cursor
