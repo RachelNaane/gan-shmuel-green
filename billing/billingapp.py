@@ -46,7 +46,7 @@ def truck():
 
 @app.route('/truck/<id>', methods=['GET'])
 def get_truck_data(id):
-    curr_host = "18.133.232.66"
+    curr_host = "3.9.66.97"
 
     def_year = datetime.now().year
     def_month = datetime.now().month
@@ -56,7 +56,7 @@ def get_truck_data(id):
     t1 = request.args.get('from', default= default_start)
     t2 = request.args.get('to', default= datetime)
 
-    response = requests.get(f"http://{curr_host}:8081/item/{id}?t1={t1}")
+    response = requests.get(f"http://{curr_host}:8086/item/{id}?t1={t1}")
     if response.status_code == 200:
         data = response.json()
         return data  
@@ -176,9 +176,13 @@ def bill(id):
     for truck in truck_list:
         current_providers_trucks.append(truck[0])
     
-    curr_host = "18.133.232.66"
-    weight_json_array = requests.get(f"http://{curr_host}:8081/weight?t1={start}&t2={to}")
+    curr_host = "3.9.66.97"
+    weight_json_array = requests.get(f"http://{curr_host}:8086/weight?t1={start}&t2={to}")
     weight_json_array = weight_json_array.json()
+    if weight.status_code == 400:
+        return "Bill From That Date Range Wasn't Not Found", 404
+    elif weight.status_code == 500:
+        return "Error: API request unsuccessful", 500
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
             "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
@@ -204,7 +208,7 @@ def bill(id):
             current_sessions_num = 0
             for container in weight["containers"]:
 
-                temp = requests.get(f"http://{curr_host}:8081/item/{container}?t1={start}")
+                temp = requests.get(f"http://{curr_host}:8086/item/{container}?t1={start}")
                 temp_container = temp.json()
                 current_sessions_num += len(temp_container["sessions"])
 
