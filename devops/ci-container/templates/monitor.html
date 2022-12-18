@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>Monitoring</title>
+    </head>
+
+    
+    <body>
+        <div id="succes" class="font-mono" style="color: green;"></div>
+        <div id="failure" class="font-mono" style="color: red;"></div>
+        <script>
+            async function httpGet(url, service)
+            {
+                try {
+                    const response = await fetch(url, {method: 'GET', mode: 'no-cors'});
+                    if (response.status == 0) {
+                    
+                        return service + " 200 OK GOOD JOB :)";
+                    }
+                } catch{
+                    return "Website " + service + " is not available....:(:(";
+                }
+            }
+
+
+            ls_dict = {'Google': 'http://www.google.com',
+                        'Youtube': 'http://www.youtube.com',
+                        'Facebook': 'http://www.facebook.com',
+                        'Yotams website': 'http://www.yotamsfakewebsite.com',
+                        'Ci-container': 'http://3.9.66.97:8085/health',
+                        'Weight App/DB': 'http://3.9.66.97:8081/health',
+                        'Billing App/DB': 'http://3.9.66.97:8083/health',
+                        'Weight testing App/DB': 'http://3.9.66.97:8086/health',
+                        'Billing testing App/DB': 'http://3.9.66.97:8088/health'}
+
+            async function main()
+            {
+                for (index in ls_dict){
+                    const newDiv = document.createElement("div");
+
+                    a = await httpGet(ls_dict[index], index)
+                    newContent = document.createTextNode(a);
+
+                    newDiv.appendChild(newContent);
+                    document.body.appendChild(newDiv);
+                }
+                  
+            }
+            
+            setInterval(function() {
+                location.reload();
+            }, 5000);
+
+            main()
+        </script>           
+    </body>
+</html>
