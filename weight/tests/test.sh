@@ -2,16 +2,17 @@
 
 # Set the base URL of your Flask API
 API_BASE_URL="3.9.66.97:8086"
+# API_BASE_URL="localhost:5000"
 
 
 # Declare an empty array to store the responses from the requests
 declare -a RESPONSES
 
 # Clear file
-touch score.txt
+echo "Starting Tests" > score.txt
 
 # Define an array of the endpoints to test
-ENDPOINTS=( "/health" "/weight" "/unknown" "/session/1" )
+ENDPOINTS=( "/health" "/weight?t1=200104041" "/unknown" "/session/22324" "/item/C-00124?t1=20010404" )
 
 # Iterate over the array of endpoints
 for endpoint in "${ENDPOINTS[@]}"; do
@@ -29,6 +30,13 @@ for endpoint in "${ENDPOINTS[@]}"; do
   
 done
 
+bash postweighttest.sh
+if [ $? -eq 0 ]; then
+  echo "post/weight ran successfully"
+else
+  echo "post/weight failed"
+  exit 1
+fi
 
 # Check if all items in the array equal 200
 for item in "${RESPONSES[@]}"; do
