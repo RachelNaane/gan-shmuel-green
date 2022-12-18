@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <title>POST Request Form</title>
+    <style>
+      /* Add some basic styles for the page */
+      body {
+        background-color: #333;
+        color: #fff;
+        font-family: sans-serif;
+      }
+
+      /* Style the form elements */
+      form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #444;
+        border-radius: 5px;
+      }
+
+      form label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      form select,
+      form input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #555;
+        color: #fff;
+      }
+
+      form input[type="submit"] {
+        background-color: #5cb85c;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="http://127.0.0.1:5000/weight" method="post" id="form">
+      <label for="direction">Direction:</label>
+      <select id="direction" name="direction">
+        <option value="In">In</option>
+        <option value="Out">Out</option>
+        <option value="None">None</option>
+      </select>
+
+      <label for="truck">Truck:</label>
+      <input type="text" id="truck" name="truck" value="T-12345">
+
+      <label for="containers">Containers:</label>
+      <input type="text" id="containers" name="containers" value="C-54804">
+
+      <label for="weight">Weight:</label>
+      <input type="text" id="weight" name="weight" value="6000">
+
+      <label for="unit">Unit:</label>
+      <select id="unit" name="unit">
+        <option value="kg">Kg</option>
+        <option value="lbs">Lbs</option>
+      </select>
+
+      <label for="force">Force:</label>
+      <select id="force" name="force">
+        <option value="true">True</option>
+        <option value="false">False</option>
+      </select>
+
+      <label for="produce">Produce:</label>
+      <input type="text" id="produce" name="produce" value="Apples">
+
+      <input type="submit" value="Submit">
+    </form> 
+    <div id="response"></div>
+  </body>
+  <script>
+   
+document.getElementById("form").addEventListener("submit", function(event) {
+event.preventDefault();
+var xhr = new XMLHttpRequest();
+xhr.onload = function() {
+if (xhr.status === 200) {
+document.getElementById("response").innerHTML = JSON.parse(xhr.responseText).key;
+}
+};
+xhr.open("POST", "http://127.0.0.1:5000/weight", true);
+xhr.send(new FormData(document.getElementById("form")));
+});
+</script>
+</html>
