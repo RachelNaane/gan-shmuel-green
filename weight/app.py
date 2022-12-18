@@ -44,9 +44,13 @@ def weightpost():
             alltid = ["id", data["sessionid"], data["time"], data["direction"], data["truck"], data["containers"], 20, None, None, 'apples']
 
 
+    
+        if data["direction"] == "None" and allrows[-1][3] == "IN":
+            print("None after In")
+            return "None after In"
 
 
-        if data["direction"] == "None":
+        elif data["direction"] == "None":
 
 
             resdict = dbconnection.run_sql_command(fr"SELECT * FROM containers_registered WHERE container_id = '{data['containers']}';")
@@ -64,6 +68,7 @@ def weightpost():
 
             return resdict
 
+        
 
         elif data["direction"] == alltid[-1][3] and len(alltid) > 0:
             if data["force"] == "False":
@@ -324,9 +329,10 @@ def get_item(id):
         date_end = date_end.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_start is None:
-        #Give value of 0000 and the date of today
-        tmp1 = str(date.today())
-        date_start = tmp1+" 00:00:00"
+        # Get the current date and time
+        now = datetime.now()
+        # Set the time to 00:00:00
+        date_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     if date_end is None:
         #Value of Now
