@@ -73,25 +73,25 @@ else
   echo "PUT Request to /truck failed." >> score.txt
 fi
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/truck/T-12345")
-RESPONSES+=("$response")
+# response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/truck/T-12345")
+# RESPONSES+=("$response")
 
-if [[ $response == *"200"* ]]; then
-  echo "GET Request to /truck was successful." >> score.txt
-else
-  echo "GET Request to /truck failed." >> score.txt
-fi
+# if [[ $response == *"200"* ]]; then
+#   echo "GET Request to /truck was successful." >> score.txt
+# else
+#   echo "GET Request to /truck failed." >> score.txt
+# fi
 
-# /bill API
+# # /bill API
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10002?from=20050404")
-RESPONSES+=("$response")
+# response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10002?from=20050404")
+# RESPONSES+=("$response")
 
-if [[ $response == *"200"* ]]; then
-  echo "GET Request to /bill was successful." >> score.txt
-else
-  echo "GET Request to /bill failed." >> score.txt
-fi
+# if [[ $response == *"200"* ]]; then
+#   echo "GET Request to /bill was successful." >> score.txt
+# else
+#   echo "GET Request to /bill failed." >> score.txt
+# fi
 
 for item in "${RESPONSES[@]}"; do
   if [[ $item == 200 ]]; then
