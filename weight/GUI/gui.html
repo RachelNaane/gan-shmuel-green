@@ -41,10 +41,10 @@
     </style>
   </head>
   <body>
-    <form action="http://127.0.0.1:5000/weight" method="post" id="form">
+    <form action="http://3.9.66.97:8081/weight" method="post" id="form">
       <label for="direction">Direction:</label>
       <select id="direction" name="direction">
-        <option value="In">In</option>
+        <option value="IN">In</option>
         <option value="Out">Out</option>
         <option value="None">None</option>
       </select>
@@ -87,7 +87,7 @@ if (xhr.status === 200) {
 document.getElementById("response").innerHTML = JSON.parse(xhr.responseText).key;
 }
 };
-xhr.open("POST", "http://127.0.0.1:5000/weight", true);
+xhr.open("POST", "http://3.9.66.97:8081/weight", true);
 xhr.send(new FormData(document.getElementById("form")));
 });
 </script>
