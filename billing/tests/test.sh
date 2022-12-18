@@ -1,7 +1,7 @@
 #!/bin/bash
 
-API_BASE_URL="3.9.66.97:8088"
-#API_BASE_URL="localhost:8083"
+#API_BASE_URL="3.9.66.97:8088"
+API_BASE_URL="localhost:8083"
 touch score.txt
 
 # /rates API
@@ -65,7 +65,7 @@ else
   echo "POST Request to /truck failed." >> score.txt
 fi
 
-response=$(curl -o /dev/null -w "%{http_code}" -X PUT -H "Content-Type: application/json" -d '{"provider_id":10001}' $API_BASE_URL/truck/T-32123)
+response=$(curl -o /dev/null -w "%{http_code}" -X PUT -H "Content-Type: application/json" -d '{"provider_id":10002}' $API_BASE_URL/truck/T-32123)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
@@ -85,7 +85,7 @@ fi
 
 # /bill API
 
-response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10006?from=20050404")
+response=$(curl -s -o /dev/null -w "%{http_code}" "$API_BASE_URL/bill/10002?from=20050404")
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then
