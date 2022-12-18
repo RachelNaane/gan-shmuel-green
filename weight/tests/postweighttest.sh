@@ -1,6 +1,6 @@
 
 functest=0
-# HOST="localhost:5000"
+# HOST="localhost:8081"
 HOST='3.9.66.97:8086'
 
 #truck in 
@@ -58,9 +58,9 @@ else
 fi
 
 #None
-result=$(curl -X POST -d 'direction=None&truck=T-SystemTest2&containers='C-35434'&weight=619&unit=kg&force=true&produce=apples' "http://$HOST/weight")
+result=$(curl -X POST -d 'direction=None&truck=T-SystemTest2&containers='C-65816'&weight=619&unit=kg&force=true&produce=apples' "http://$HOST/weight")
 
-if echo "$result" | grep -q '"bruto":296,"containers":"C-35434","id":.*}'; then
+if echo "$result" | grep -q '"bruto":270,"containers":"C-65816","id":.*}'; then
 	functest=$((functest + 1))
 else
 	echo "Error when None " >> "score.txt"
