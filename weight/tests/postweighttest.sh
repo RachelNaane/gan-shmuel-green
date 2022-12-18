@@ -57,15 +57,6 @@ else
 	echo "Error when new truck in again " >> "score.txt"
 fi
 
-#None
-result=$(curl -X POST -d 'direction=None&truck=T-SystemTest2&containers='C-65816'&weight=619&unit=kg&force=true&produce=apples' "http://$HOST/weight")
-
-if echo "$result" | grep -q '"bruto":270,"containers":"C-65816","id":.*}'; then
-	functest=$((functest + 1))
-else
-	echo "Error when None " >> "score.txt"
-fi
-
 
 #truck in 
 result=$(curl -X POST -d 'direction=in&truck=T-SystemTest7&containers='C-65816'&weight=1500&unit=kg&force=true&produce=apples' "http://$HOST/weight")
