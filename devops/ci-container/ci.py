@@ -58,5 +58,11 @@ def send_mail(content):
     mail.send(msg) 
     return "OK"
 
+# monitor on health checks
+@app.get("/monitor")
+def monitoring():
+    return render_template("monitor.html")
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0",debug=True)
