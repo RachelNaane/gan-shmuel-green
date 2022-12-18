@@ -35,7 +35,7 @@ fi
 
 # /provider API
 
-response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"name":"Prigat"}' $API_BASE_URL/provider)
+response=$(curl -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: application/json" -d '{"name":"New Provider"}' $API_BASE_URL/provider)
 RESPONSES+=("$response")
 
 if [[ $response == *"200"* ]]; then

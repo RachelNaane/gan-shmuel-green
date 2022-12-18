@@ -57,7 +57,7 @@ def get_truck_data(id):
     t1 = request.args.get('from', default= default_start)
     t2 = request.args.get('to', default= datetime)
     
-    response = requests.get(f"http://{curr_host}:8086/item/{id}?t1={t1}")
+    response = requests.get(f"http://{curr_host}:8088/item/{id}?t1={t1}")
     if response.status_code == 200:
         data = response.json()
         return data  
@@ -176,7 +176,7 @@ def bill(id):
         current_providers_trucks.append(truck[0])
     
     curr_host = "3.9.66.97"
-    weight_json_array = requests.get(f"http://{curr_host}:8086/weight?t1={start}&t2={to}&filter=OUT")
+    weight_json_array = requests.get(f"http://{curr_host}:8088/weight?t1={start}&t2={to}&filter=OUT")
     weight_json_array = weight_json_array.json()
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
@@ -199,7 +199,7 @@ def bill(id):
             current_rate = current_rate[0]
         current_sessions_num = 0
         for container in weight["containers"]:
-            temp = requests.get(f"http://{curr_host}:8086/item/{container}?t1={start}")
+            temp = requests.get(f"http://{curr_host}:8088/item/{container}?t1={start}")
             temp_container = temp.json()
             current_sessions_num += len(temp_container["sessions"])
         rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
