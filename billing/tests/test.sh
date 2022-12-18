@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#API_BASE_URL="3.9.66.97:8088"
-API_BASE_URL="localhost:8083"
+API_BASE_URL="3.9.66.97:8088"
 touch score.txt
 
 # /rates API
