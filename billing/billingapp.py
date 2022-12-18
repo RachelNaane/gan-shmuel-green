@@ -19,13 +19,13 @@ def update_provider_id(id):
     cursor.execute(f"SELECT * from Provider where id = {int(new_provider_id)};")
     is_a_known_provider = cursor.fetchone()
     if not is_a_known_provider:
-        return make_response("<h1>Unown Provider</h1>",500)
+        return make_response("<h1>Unown Provider</h1>",400)
 
     try:
         cursor.execute(f"UPDATE Trucks SET provider_id = {int(new_provider_id)} where id = '{id}';")
         return make_response("<h1>Updated</h1>",200)  
     except:
-        return make_response("<h1>Failure</h1>",500)
+        return make_response("<h1>Failure</h1>",400)
 
 
 @app.route("/truck", methods=["POST"])
@@ -37,11 +37,11 @@ def truck():
     cursor.execute(f"SELECT * from Provider where id = {int(provider_id)};")
     is_a_known_provider = cursor.fetchone()
     if not is_a_known_provider:
-        return make_response("<h1>Unown Provider</h1>",500)
+        return make_response("<h1>Unown Provider</h1>",400)
     try:
         cursor.execute(f"INSERT INTO Trucks VALUES ('{truck_id}',{int(provider_id)});")
     except:
-        return make_response("<h1>Failure</h1>",500)
+        return make_response("<h1>Failure</h1>",400)
     return make_response("<h1>Registerd</h1>",200)
 
 @app.route('/truck/<id>', methods=['GET'])
@@ -56,7 +56,7 @@ def get_truck_data(id):
     t1 = request.args.get('from', default= default_start)
     t2 = request.args.get('to', default= datetime)
 
-    response = requests.get(f"http://{curr_host}:8086/item/{id}?t1={t1}")
+    response = requests.get(f"http://{curr_host}:8083/item/{id}?t1={t1}")
     if response.status_code == 200:
         data = response.json()
         return data  
@@ -128,7 +128,7 @@ def update_provider(provider_id):
         cursor.execute(f"UPDATE Provider SET name = '{name_to_change}' where id = {provider_id};")  
         return make_response("<h1>OK</h1>",200)
     except:
-        return make_response("<h1>Unable to update</h1>",500)
+        return make_response("<h1>Unable to update</h1>",400)
 
 
 @app.route("/provider", methods=["POST"])  
@@ -152,8 +152,7 @@ def bill(id):
     today=datetime.now()
     default_now=today.strftime("%Y%m%d%H%M%S")
     default_day= default_now[:6]+"01000000"
-
-    
+  
     to = request.args.get("to", default= default_now)
     start = request.args.get("from",default= default_day)
 
@@ -164,12 +163,11 @@ def bill(id):
     if not provider_name:
         return make_response("<h1>Unregistered Provider</h1>",400)
     provider_name = provider_name[0]
-
     
     cursor.execute(f"SELECT id from Trucks WHERE provider_id = {id};")
     truck_list = cursor.fetchall()
     if not truck_list:
-        return make_response("<h1>The current provider doesn't have trucks assigned to him</h1>",500)
+        return make_response("<h1>The current provider doesn't have trucks assigned to him</h1>",400)
     
     total_trucks = []
     current_providers_trucks = []
@@ -177,21 +175,18 @@ def bill(id):
         current_providers_trucks.append(truck[0])
     
     curr_host = "3.9.66.97"
-    weight_json_array = requests.get(f"http://{curr_host}:8086/weight?t1={start}&t2={to}")
+    weight_json_array = requests.get(f"http://{curr_host}:8083/weight?t1={start}&t2={to}")
     weight_json_array = weight_json_array.json()
-    
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
             "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
 
-    
     for weight in weight_json_array:
         if weight["id"] not in(current_providers_trucks):
             continue
         else:
             if weight["id"] not in total_trucks:
                 total_trucks.append(weight["id"])
-        
         if weight["direction"]=="OUT":
             cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
             current_rate = cursor.fetchone()
@@ -201,20 +196,16 @@ def bill(id):
                 current_rate = current_rate[0]
             else:
                 current_rate = current_rate[0]
-
             current_sessions_num = 0
             for container in weight["containers"]:
-
-                temp = requests.get(f"http://{curr_host}:8086/item/{container}?t1={start}")
+                temp = requests.get(f"http://{curr_host}:8083/item/{container}?t1={start}")
                 temp_container = temp.json()
                 current_sessions_num += len(temp_container["sessions"])
-
 
             rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
 
     total_sessions_count = 0
     total_pay = 0
-
     for item in rev["products"]:
         total_sessions_count += item["count"]
         total_pay += item["pay"]
