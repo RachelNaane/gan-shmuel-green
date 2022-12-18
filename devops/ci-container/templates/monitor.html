@@ -1,42 +1,64 @@
 <html>
     <head>
         <title>Monitoring</title>
+
+        <style>
+            .tab1 {
+                tab-size: 2;
+            }
+            .center {
+                /* border: 5px solid; */
+                text-align: center;
+            }
+            h3 {
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 22px;
+                color: #000000;
+                text-align: center;
+            }
+
+        </style>
     </head>
 
     
-    <body>
-        <div id="succes" class="font-mono" style="color: green;"></div>
-        <div id="failure" class="font-mono" style="color: red;"></div>
+    <body style="background-color:powderblue">
+        <header>
+            <pre class="tab1"><h3>Website                  Status</h3></pre>
+        </header>
+
         <script>
+            // gets a url and service name and does a fetch request to the url
+            // and returns a string accordingly
             async function httpGet(url, service)
             {
                 try {
                     const response = await fetch(url, {method: 'GET', mode: 'no-cors'});
                     if (response.status == 0) {
                     
-                        return service + " 200 OK GOOD JOB :)";
+                        return service + " ----------> 200 OK ";
+                        
                     }
                 } catch{
-                    return "Website " + service + " is not available....:(:(";
+                    return service + " ----------> is not available...";
                 }
             }
 
 
-            ls_dict = {'Google': 'http://www.google.com',
-                        'Youtube': 'http://www.youtube.com',
-                        'Facebook': 'http://www.facebook.com',
-                        'Yotams website': 'http://www.yotamsfakewebsite.com',
-                        'Ci-container': 'http://3.9.66.97:8085/health',
+            ls_dict = {'Ci-cont-devops': 'http://3.9.66.97:8085/health',
                         'Weight App/DB': 'http://3.9.66.97:8081/health',
                         'Billing App/DB': 'http://3.9.66.97:8083/health',
-                        'Weight testing App/DB': 'http://3.9.66.97:8086/health',
-                        'Billing testing App/DB': 'http://3.9.66.97:8088/health'}
+                        'Weight test App/DB': 'http://3.9.66.97:8086/health',
+                        'Billing test App/DB': 'http://3.9.66.97:8088/health'}
 
+            // prints the string gotten from 'httpGet' function to the screen
             async function main()
             {
                 for (index in ls_dict){
-                    const newDiv = document.createElement("div");
-
+                    var newDiv = document.createElement("div");
+                    newDiv.style.width = "auto";
+                    newDiv.style.height = "50px";
+                    newDiv.className = "center";
+                    
                     a = await httpGet(ls_dict[index], index)
                     newContent = document.createTextNode(a);
 
@@ -45,12 +67,12 @@
                 }
                   
             }
-            
+            // refresh the page every 8 seconds
             setInterval(function() {
                 location.reload();
-            }, 5000);
+            }, 8000);
 
             main()
-        </script>           
+        </script>         
     </body>
 </html>
