@@ -324,9 +324,10 @@ def get_item(id):
         date_end = date_end.strftime('%Y-%m-%d %H:%M:%S')
 
     if date_start is None:
-        #Give value of 0000 and the date of today
-        tmp1 = str(date.today())
-        date_start = tmp1+" 00:00:00"
+        # Get the current date and time
+        now = datetime.now()
+        # Set the time to 00:00:00
+        date_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     if date_end is None:
         #Value of Now
