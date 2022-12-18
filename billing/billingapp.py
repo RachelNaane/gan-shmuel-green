@@ -57,7 +57,7 @@ def get_truck_data(id):
     t1 = request.args.get('from', default= default_start)
     t2 = request.args.get('to', default= datetime)
     
-    response = requests.get(f"http://{curr_host}:8081/item/{id}?t1={t1}")
+    response = requests.get(f"http://{curr_host}:8086/item/{id}?t1={t1}")
     if response.status_code == 200:
         data = response.json()
         return data  
@@ -69,18 +69,18 @@ def get_truck_data(id):
 
 @app.route("/")
 def home():
-    return make_response("<h1>WELCOME TO GAN SHMUEL'S JUICE PRODUCTION'S BILLING CLASS</h1>",200)
+    return make_response(render_template('home.html'),200)
 
 
 @app.route("/health")
 def health():
+    status = "OK"
     try:
         db_connect()
         cursor.execute("SELECT 1;")
     except:
-        return make_response("<h1>Failure</h1>",500)
-    return make_response("<h1>OK</h1>",200)
-
+        return "Failure",500
+    return "OK",200
 
 @app.route("/rates", methods=["GET","POST"])
 def get_rates():
@@ -176,34 +176,33 @@ def bill(id):
         current_providers_trucks.append(truck[0])
     
     curr_host = "3.9.66.97"
-    weight_json_array = requests.get(f"http://{curr_host}:8081/weight?t1={start}&t2={to}")
+    weight_json_array = requests.get(f"http://{curr_host}:8086/weight?t1={start}&t2={to}&filter=OUT")
     weight_json_array = weight_json_array.json()
 
     rev = {"id":id,"name": provider_name,"from": convert_int_to_correct_date_format(start),
             "to": convert_int_to_correct_date_format(to),"truckcount":0,"sessioncount":0,"products":[],"total":0}
 
     for weight in weight_json_array:
+        print(weight['produce'])
         if weight["id"] not in(current_providers_trucks):
             continue
         else:
             if weight["id"] not in total_trucks:
                 total_trucks.append(weight["id"])
-        if weight["direction"]=="OUT":
-            cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
+        cursor.execute(f"SELECT rate from Rates where scope = '{id}' and product_id = '{weight['produce']}';")
+        current_rate = cursor.fetchone()
+        if not current_rate:
+            cursor.execute(f"SELECT rate from Rates where scope = 'ALL' and product_id = '{weight['produce']}';")
             current_rate = cursor.fetchone()
-            if not current_rate:
-                cursor.execute(f"SELECT rate from Rates where scope = 'ALL' and product_id = '{weight['produce']}';")
-                current_rate = cursor.fetchone()
-                current_rate = current_rate[0]
-            else:
-                current_rate = current_rate[0]
-            current_sessions_num = 0
-            for container in weight["containers"]:
-                temp = requests.get(f"http://{curr_host}:8081/item/{container}?t1={start}")
-                temp_container = temp.json()
-                current_sessions_num += len(temp_container["sessions"])
-
-            rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
+            current_rate = current_rate[0]
+        else:
+            current_rate = current_rate[0]
+        current_sessions_num = 0
+        for container in weight["containers"]:
+            temp = requests.get(f"http://{curr_host}:8086/item/{container}?t1={start}")
+            temp_container = temp.json()
+            current_sessions_num += len(temp_container["sessions"])
+        rev["products"].append({"product":weight["produce"],"count":current_sessions_num,"amount":weight["neto"],"rate":current_rate,"pay":(current_rate*int(weight["neto"]))})
 
     total_sessions_count = 0
     total_pay = 0
