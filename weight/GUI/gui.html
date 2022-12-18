@@ -1,4 +1,7 @@
 <html>
+  <script>
+
+  </script>
   <head>
     <title>POST Request Form</title>
     <style>
@@ -31,6 +34,7 @@
         border-radius: 5px;
         background-color: #555;
         color: #fff;
+        margin-bottom: 15px;
       }
 
       form input[type="submit"] {
@@ -41,6 +45,9 @@
     </style>
   </head>
   <body>
+    
+    <h1 style="font-size: 24px; color: #5cb85c; text-align: center; margin: 20px 0;">Weight Team!</h1>
+
     <form action="http://3.9.66.97:8081/weight" method="post" id="form">
       <label for="direction">Direction:</label>
       <select id="direction" name="direction">
@@ -90,5 +97,28 @@ document.getElementById("response").innerHTML = JSON.parse(xhr.responseText).key
 xhr.open("POST", "http://3.9.66.97:8081/weight", true);
 xhr.send(new FormData(document.getElementById("form")));
 });
+
+
+// create a function to change the color of the button on hover
+function changeColorOnHover() {
+  this.style.backgroundColor = "#2d6e2d";
+}
+
+// create a function to change the color of the button back to its original color on mouseout
+function changeColorOnMouseout() {
+  this.style.backgroundColor = "";
+}
+
+// create a function to do something when the button is clicked
+function doSomethingOnClick() {
+  this.style.backgroundColor = "#2d6e2d";
+}
+
+// add event listeners to the button
+document.querySelector("input[type='submit']").addEventListener("mouseover", changeColorOnHover);
+document.querySelector("input[type='submit']").addEventListener("mouseout", changeColorOnMouseout);
+document.querySelector("input[type='submit']").addEventListener("click", doSomethingOnClick);
+
+
 </script>
 </html>
