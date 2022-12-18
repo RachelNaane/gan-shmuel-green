@@ -46,6 +46,7 @@ def truck():
 
 @app.route('/truck/<id>', methods=['GET'])
 def get_truck_data(id):
+
     curr_host = "3.9.66.97"
 
     def_year = datetime.now().year
@@ -55,7 +56,7 @@ def get_truck_data(id):
     date_time = now.strftime("%Y%m%d")
     t1 = request.args.get('from', default= default_start)
     t2 = request.args.get('to', default= datetime)
-
+    
     response = requests.get(f"http://{curr_host}:8081/item/{id}?t1={t1}")
     if response.status_code == 200:
         data = response.json()
