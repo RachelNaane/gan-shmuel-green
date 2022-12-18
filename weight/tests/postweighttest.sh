@@ -98,7 +98,7 @@ fi
 
 
 
-echo "Request to post/weight $functest/10 Passed successfully" >> "score.txt"
+echo "Request to post/weight $functest/9 Passed successfully" >> "score.txt"
 
 if [[ "$functest" -eq 9 ]]; then
     exit 0
